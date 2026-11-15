@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en" data-page-node-id="fgxBZ5osTxGkGzzzclEBY4">
+<head data-page-node-id="I1DeSREObR8N4UDx2bR7VE">
+<meta charset="UTF-8" data-page-node-id="Ob0U7tLYJq0DhnC5f6hEgx">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="OWUGxs7cZ1rLkdgWQpCgQr">
+<title>Team Bingo – Classroom Territory Battle</title>
+<style>
+  :root {
+    --bg: #f0f4f8;
+    --panel: #ffffff;
+    --ink: #1e293b;
+    --muted: #64748b;
+    --gold: #fbbf24;
+    --shadow: 0 8px 24px rgba(30, 41, 59, .12);
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #eef2ff 0%, #f0fdf4 50%, #fef2f2 100%);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+
+  /* ===== Header ===== */
+  header { text-align: center; margin-bottom: 22px; }
+  header h1 {
+    font-size: clamp(28px, 4.5vw, 48px);
+    letter-spacing: .12em;
+    font-weight: 900;
+    background: linear-gradient(90deg, #ef4444, #3b82f6, #22c55e);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+  }
+  header .subtitle {
+    color: var(--muted); font-size: clamp(13px, 1.6vw, 17px); margin-top: 4px;
+    letter-spacing: .04em;
+  }
+
+  /* ===== Question panel ===== */
+  .question-panel {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border-radius: 20px; padding: 20px 26px;
+    box-shadow: var(--shadow); margin-bottom: 20px;
+    text-align: center; color: #fff;
+    border-bottom: 5px solid var(--gold);
+  }
+  .qp-counter {
+    font-size: clamp(13px, 1.6vw, 16px); font-weight: 800;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--gold);
+    display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+  }
+  .qp-badge {
+    background: #dc2626; color: #fff; font-size: 12px; padding: 3px 12px;
+    border-radius: 99px; letter-spacing: .08em; font-weight: 800;
+  }
+  .qp-text {
+    font-size: clamp(22px, 4vw, 46px); font-weight: 900;
+    margin-top: 12px; line-height: 1.3; min-height: 58px;
+    display: flex; align-items: center; justify-content: center;
+    word-break: break-word; text-shadow: 0 2px 8px rgba(0,0,0,.35);
+  }
+  .qp-text.placeholder { color: #94a3b8; font-weight: 700; font-size: clamp(16px, 2.4vw, 24px); }
+  .qp-nav { display: flex; gap: 12px; justify-content: center; align-items: center; margin-top: 16px; flex-wrap: wrap; }
+  .qp-nav .q-count { color: #cbd5e1; font-weight: 700; font-size: 15px; min-width: 70px; }
+
+  /* ===== Layout ===== */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .sidebar { order: 2; }
+  }
+
+  /* Question manager rows */
+  .q-row {
+    display: flex; gap: 8px; align-items: center;
+    background: #f8fafc; border-radius: 12px; padding: 8px 12px; margin-bottom: 8px;
+  }
+  .q-row .q-num {
+    font-weight: 900; color: #4f46e5; min-width: 26px; text-align: right; font-size: 15px;
+  }
+  .q-row input[type="text"] { flex: 1; }
+  .q-row .q-del {
+    background: #fef2f2; color: #b91c1c; border: 2px solid #fecaca;
+    padding: 8px 12px; border-radius: 8px; font-size: 13px; flex-shrink: 0;
+  }
+  .btn-add-q { width: 100%; background: #ecfdf5; color: #047857; border: 2px dashed #a7f3d0; font-size: 15px; }
+
+  /* Compact question bar shown in Big Board mode */
+  .focus-q {
+    display: none; text-align: center; padding: 6px 14px 14px;
+  }
+  .focus-q.show { display: block; }
+  .focus-q .fq-counter { color: #b45309; font-weight: 800; font-size: 14px; letter-spacing: .06em; text-transform: uppercase; }
+  .focus-q .fq-text {
+    font-size: clamp(18px, 3vw, 34px); font-weight: 900; color: var(--ink);
+    line-height: 1.3; margin-top: 4px; word-break: break-word;
+  }
+
+  /* ===== Scoreboard ===== */
+  .scoreboard { margin-bottom: 20px; }
+  .score-card {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--panel); border-radius: var(--radius);
+    padding: 12px 16px; margin-bottom: 10px;
+    box-shadow: var(--shadow); border-left: 8px solid #ccc;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .score-card.active { transform: translateX(6px); box-shadow: 0 8px 24px rgba(30,41,59,.2); }
+  .score-card .dot { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; }
+  .score-card .info { flex: 1; min-width: 0; }
+  .score-card .name { font-weight: 800; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .score-card .bar { height: 10px; background: #e2e8f0; border-radius: 99px; margin-top: 6px; overflow: hidden; }
+  .score-card .bar .fill { height: 100%; width: 0; border-radius: 99px; transition: width .35s ease; }
+  .score-card .count { font-size: 28px; font-weight: 900; min-width: 54px; text-align: right; }
+  .score-card .count small { font-size: 12px; color: var(--muted); display: block; font-weight: 600; }
+
+  /* ===== Status bar ===== */
+  .status-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: var(--panel); border-radius: var(--radius);
+    padding: 12px 18px; box-shadow: var(--shadow); margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .status-msg { font-weight: 700; font-size: clamp(14px, 1.8vw, 18px); }
+  .status-msg .turn-team { padding: 3px 12px; border-radius: 99px; color: #fff; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  button {
+    font-family: inherit; font-size: 15px; font-weight: 700;
+    border: none; border-radius: 10px; padding: 10px 18px;
+    cursor: pointer; transition: filter .15s, transform .1s;
+  }
+  button:active { transform: scale(.97); }
+  button:hover { filter: brightness(1.06); }
+  .btn-outline {
+    background: #fff; color: var(--ink);
+    border: 2px solid #cbd5e1;
+  }
+  .btn-primary { background: #4f46e5; color: #fff; }
+  .btn-danger { background: #ef4444; color: #fff; }
+
+  /* ===== Team selector ===== */
+  .team-select { margin-bottom: 20px; }
+  .team-btn {
+    width: 100%; padding: 16px; margin-bottom: 10px;
+    border-radius: var(--radius); color: #fff; font-size: 18px; font-weight: 800;
+    border: 4px solid transparent; box-shadow: var(--shadow);
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .team-btn.selected {
+    border-color: #fde047;
+    outline: 4px solid rgba(253, 224, 71, .45);
+    transform: scale(1.03);
+  }
+  .team-btn .hint { font-size: 12px; font-weight: 600; opacity: .85; display: block; }
+
+  /* ===== Board ===== */
+  .board-panel {
+    background: var(--panel); border-radius: 20px;
+    padding: 22px; box-shadow: var(--shadow);
+  }
+  .board {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 14px; aspect-ratio: 1/1; max-height: 68vh; margin: 0 auto;
+  }
+  .cell {
+    border-radius: 14px; background: #f8fafc;
+    border: 3px solid #e2e8f0;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; font-size: clamp(16px, 3.2vw, 38px); font-weight: 800;
+    word-break: break-word; padding: 8px; cursor: pointer; color: #334155;
+    transition: background .25s, color .25s, transform .15s, box-shadow .25s;
+    position: relative; user-select: none; line-height: 1.25;
+  }
+  .cell:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(30,41,59,.15); }
+  .cell.claimed { cursor: not-allowed; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,.25); }
+  .cell.claimed:hover { transform: none; box-shadow: none; }
+  .cell .team-tag {
+    position: absolute; top: 8px; left: 10px; font-size: clamp(10px, 1.2vw, 14px);
+    font-weight: 900; opacity: .9; letter-spacing: .05em;
+  }
+  .cell.winner {
+    border: 5px solid var(--gold) !important;
+    box-shadow: 0 0 0 4px rgba(251,191,36,.35), 0 0 30px rgba(251,191,36,.55);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(251,191,36,.35), 0 0 20px rgba(251,191,36,.45); }
+    50% { box-shadow: 0 0 0 7px rgba(251,191,36,.5), 0 0 40px rgba(251,191,36,.7); }
+  }
+
+  /* ===== Bingo overlay ===== */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, .72);
+    display: none; align-items: center; justify-content: center;
+    z-index: 100; padding: 20px;
+  }
+  .overlay.show { display: flex; }
+  .bingo-card {
+    background: linear-gradient(135deg, #1f2937, #111827);
+    border: 6px solid var(--gold);
+    border-radius: 24px; padding: 48px 56px; text-align: center;
+    max-width: 640px; animation: pop .45s cubic-bezier(.2, 1.4, .4, 1);
+    box-shadow: 0 20px 80px rgba(0,0,0,.5);
+  }
+  @keyframes pop { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .bingo-card .bingo-word {
+    font-size: clamp(48px, 10vw, 100px); font-weight: 900; letter-spacing: .1em;
+    color: var(--gold); text-shadow: 0 0 40px rgba(251,191,36,.6);
+  }
+  .bingo-card .winners { margin: 16px 0 8px; }
+  .bingo-card .winner-line { font-size: clamp(20px, 3.5vw, 34px); font-weight: 800; margin: 8px 0; }
+  .bingo-card .congrats { color: #cbd5e1; font-size: 16px; margin-top: 14px; }
+  .bingo-card button { margin-top: 24px; font-size: 18px; padding: 14px 36px; }
+
+  /* ===== Modal (settings / confirm) ===== */
+  .modal {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, .55);
+    display: none; align-items: center; justify-content: center; z-index: 90; padding: 20px;
+  }
+  .modal.show { display: flex; }
+  .modal-card {
+    background: #fff; border-radius: 20px; padding: 28px;
+    width: min(560px, 96vw); max-height: 88vh; overflow-y: auto;
+    box-shadow: 0 20px 80px rgba(0,0,0,.35); animation: pop .3s ease;
+  }
+  .modal-card h2 { font-size: 22px; margin-bottom: 4px; }
+  .modal-card .desc { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+  .modal-card label { font-weight: 700; font-size: 14px; display: block; margin: 14px 0 6px; }
+  .modal-card input[type="text"] {
+    width: 100%; padding: 10px 14px; font-size: 16px; font-family: inherit;
+    border: 2px solid #e2e8f0; border-radius: 10px; transition: border-color .15s;
+  }
+  .modal-card input[type="text"]:focus { outline: none; border-color: #4f46e5; }
+  .modal-card textarea {
+    width: 100%; height: 220px; padding: 12px 14px; font-size: 16px; line-height: 1.8;
+    font-family: inherit; border: 2px solid #e2e8f0; border-radius: 10px; resize: vertical;
+  }
+  .modal-card textarea:focus { outline: none; border-color: #4f46e5; }
+  .modal-card input[type="color"] {
+    width: 60px; height: 40px; border: none; border-radius: 8px; cursor: pointer; background: none; padding: 0;
+  }
+  .team-setting-row {
+    display: flex; gap: 10px; align-items: center;
+    background: #f8fafc; border-radius: 12px; padding: 12px 14px; margin-bottom: 10px;
+  }
+  .team-setting-row input[type="text"] { flex: 1; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+  .modal-actions button { padding: 12px 24px; }
+  .error-text { color: #ef4444; font-size: 13px; margin-top: 8px; min-height: 18px; font-weight: 600; }
+
+  /* ===== Square edit menu (reassign / clear) ===== */
+  .sq-menu {
+    position: fixed; display: none; flex-direction: column; gap: 8px;
+    background: #fff; border-radius: 14px; padding: 14px; z-index: 110;
+    width: 216px; box-shadow: 0 12px 40px rgba(15, 23, 42, .3);
+    animation: pop .18s ease;
+  }
+  .sq-menu-title {
+    font-size: 13px; font-weight: 700; color: var(--muted);
+    margin-bottom: 4px; line-height: 1.4;
+    border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;
+  }
+  .sq-menu-btn { width: 100%; padding: 10px; color: #fff; border-radius: 8px; font-size: 14px; }
+  .sq-menu-btn:disabled { opacity: .55; cursor: default; }
+  .sq-menu-btn:disabled:hover { filter: none; }
+  .sq-menu-btn.sq-clear { background: #fef2f2; color: #b91c1c; border: 2px solid #fecaca; }
+  .sq-menu-btn.sq-cancel { background: #f1f5f9; color: var(--ink); }
+
+  /* toast */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #1e293b; color: #fff; font-weight: 700; padding: 14px 28px;
+    border-radius: 99px; box-shadow: var(--shadow); opacity: 0;
+    transition: opacity .3s, transform .3s; z-index: 120; pointer-events: none;
+    max-width: 90vw; text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.warn { background: #b45309; }
+
+  footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 28px; }
+
+  /* Fullscreen focus mode */
+  .focus-btn { background: #0ea5e9; color: #fff; }
+</style>
+</head>
+<body data-page-node-id="IMU5QGRlI4xevWlqHgFmnh">
+<div class="wrap" data-page-node-id="sOXYhQq2e7FudeFpUG4P7I">
+
+  <header data-page-node-id="FGv9IQ3RIAzteQIfWXTGUo">
+    <h1 data-page-node-id="fHM69D6i0cCr8HKQ3peDnl">Team Bingo</h1>
+    <div class="subtitle" data-page-node-id="YAeDzoUTACAJctIOiRPSyt">Classroom Territory Battle · 3 Teams · One Shared Board</div>
+  </header>
+
+  <!-- ===== Question Display Panel ===== -->
+  <div class="question-panel" data-page-node-id="qPanelNode1">
+    <div class="qp-counter" data-page-node-id="qPanelNode2">
+      <span id="qCounter" data-page-node-id="qPanelNode3">Question 1 of 10</span>
+      <span class="qp-badge" id="qBadge" style="display:none" data-page-node-id="qPanelNode4">🏁 Final Question</span>
+    </div>
+    <div class="qp-text" id="qText" data-page-node-id="qPanelNode5"></div>
+    <div class="qp-nav" data-page-node-id="qPanelNode6">
+      <button class="btn-outline" id="qPrevBtn" onclick="prevQuestion()" data-page-node-id="qPanelNode7">← Previous Question</button>
+      <span class="q-count" id="qNavCount" data-page-node-id="qPanelNode8">1 / 10</span>
+      <button class="btn-primary" id="qNextBtn" onclick="nextQuestion()" data-page-node-id="qPanelNode9">Next Question →</button>
+    </div>
+  </div>
+
+  <div class="status-bar" data-page-node-id="IGBsGZuFy4cN6RTSp0HV2s">
+    <div class="status-msg" id="statusMsg" data-page-node-id="ocmeFpBmtCQJZu12p1dzTe">Select a team below, then click a square to claim it.</div>
+    <div class="actions" data-page-node-id="d8fDKb58ReXlV4P3QnD2Ca">
+      <button class="btn-outline" onclick="openQuestions()" data-page-node-id="btnQMgrNode">📋 Edit Questions</button>
+      <button class="btn-outline" onclick="openKeywords()" data-page-node-id="dvgGlZgJKhwOAFzS49mI26">✏️ Edit Keywords</button>
+      <button class="btn-outline" onclick="openTeams()" data-page-node-id="5ERiiJXVgNq2KmBRTQPujv">⚙️ Team Settings</button>
+      <button class="btn-outline focus-btn" onclick="focusBoard()" data-page-node-id="yVLOtpoaWNGv7HfYseKsJH">⤢ Big Board</button>
+      <button class="btn-danger" onclick="confirmReset()" data-page-node-id="RoHRkXjFehrHI8wPOmAmsJ">🔄 Reset Game</button>
+    </div>
+  </div>
+
+  <div class="main-grid" data-page-node-id="N5qt5dGTD62WMgJdUS3x86">
+
+    <!-- Sidebar: scoreboard + team selector -->
+    <div class="sidebar" data-page-node-id="NSbLYstHjkdfEFvYk91LxE">
+      <div class="scoreboard" id="scoreboard" data-page-node-id="lWooDoSuCVN33bw0PNIo8v"></div>
+      <div class="team-select" id="teamSelect" data-page-node-id="pkvfRZAXMqcb3HB0TYNvCx"></div>
+    </div>
+
+    <!-- Board -->
+    <div class="board-panel" id="boardPanel" data-page-node-id="QZDwzRdIOUjsGHDmqU6zL8">
+      <div class="focus-q" id="focusQ" data-page-node-id="fqNode1">
+        <div class="fq-counter" id="fqCounter" data-page-node-id="fqNode2"></div>
+        <div class="fq-text" id="fqText" data-page-node-id="fqNode3"></div>
+      </div>
+      <div class="board" id="board" data-page-node-id="aURxFTsMzfwIARjbtNkVxV"></div>
+    </div>
+
+  </div>
+
+  <footer data-page-node-id="AlvyO1vEhbuAZJ0Uc2GwR8">Teacher-operated · No login required · Projector friendly</footer>
+</div>
+
+<!-- Bingo win overlay -->
+<div class="overlay" id="bingoOverlay" data-page-node-id="bKtPvHWW7VyuJTPDEBUILb">
+  <div class="bingo-card" data-page-node-id="H4u2XUw0bn8JUd21iTog4X">
+    <div class="bingo-word" data-page-node-id="vyOq2c6XeOJewx3t0qtaSr">BINGO!</div>
+    <div class="winners" id="winnerList" data-page-node-id="8ADE9plW3kXfdWcYVTn35Q"></div>
+    <div class="congrats" data-page-node-id="VlyBd1bdJX2aQOJufOshE3">🎉 Congratulations! What a battle! 🎉</div>
+    <button class="btn-primary" onclick="closeBingo()" data-page-node-id="RFLCE6BeWkdSmWekb60Pd1">Continue Game</button>
+  </div>
+</div>
+
+<!-- Keyword editor modal -->
+<div class="modal" id="kwModal" data-page-node-id="TE7kc2VadEg04QzNoQ2ILq">
+  <div class="modal-card" data-page-node-id="CeGq9EZxccZgxLaAyZJ7c3">
+    <h2 data-page-node-id="acBAHgnsPXrGn9nda202Uk">✏️ Edit Keywords</h2>
+    <div class="desc" data-page-node-id="cf4qHmaqPV3noUroLqwTap">Enter exactly 9 keywords — one per line. Applying will reset the board for a new game.</div>
+    <label data-page-node-id="FeoOJEeMR6u6eG9icNhUGb">Keywords (one per line)</label>
+    <textarea id="kwTextarea" spellcheck="false"></textarea>
+    <div class="error-text" id="kwError" data-page-node-id="AIXJBFd9WwaQfkffTXFxuI"></div>
+    <div class="modal-actions" data-page-node-id="c3GpzGyXEuce5B8UURHDpE">
+      <button class="btn-outline" onclick="closeModal('kwModal')" data-page-node-id="oEN7kSSzxImHDSvFp9NQH3">Cancel</button>
+      <button class="btn-primary" onclick="applyKeywords()" data-page-node-id="un8cVS1kLPrCONbnBSH5qn">Apply &amp; Reset Board</button>
+    </div>
+  </div>
+</div>
+
+<!-- Question manager modal -->
+<div class="modal" id="qModal" data-page-node-id="qModalNode1">
+  <div class="modal-card" data-page-node-id="qModalNode2">
+    <h2 data-page-node-id="qModalNode3">📋 Question Manager</h2>
+    <div class="desc" data-page-node-id="qModalNode4">Add, edit or delete questions. Questions are fully independent of the Bingo board — saving will <b data-page-node-id="qModalNode5">not</b> change any claimed squares, scores or the selected team.</div>
+    <div id="qList" data-page-node-id="qModalNode6"></div>
+    <button class="btn-add-q" onclick="addQuestionRow()" data-page-node-id="qModalNode7">＋ Add Question</button>
+    <div class="error-text" id="qError" data-page-node-id="qModalNode8"></div>
+    <div class="modal-actions" data-page-node-id="qModalNode9">
+      <button class="btn-outline" onclick="closeModal('qModal')" data-page-node-id="qModalNode10">Cancel</button>
+      <button class="btn-primary" onclick="applyQuestions()" data-page-node-id="qModalNode11">Save Questions</button>
+    </div>
+  </div>
+</div>
+
+<!-- Team settings modal -->
+<div class="modal" id="teamModal" data-page-node-id="olZgcj2kDaQwWRm5ENjGhr">
+  <div class="modal-card" data-page-node-id="9zeSzkZBIBQFdH1EKFQM11">
+    <h2 data-page-node-id="HrEyIBYOzS2zWlRmrHN12h">⚙️ Team Settings</h2>
+    <div class="desc" data-page-node-id="Co1dYwJ5bMWB7kL9t3sjFf">Customize team names and colors. Squares already claimed will update automatically.</div>
+    <div id="teamSettingRows" data-page-node-id="uHFt2sipzDZYedVd8isBHt"></div>
+    <div class="error-text" id="teamError" data-page-node-id="gH7BIZmergHLhzWbHMUsxF"></div>
+    <div class="modal-actions" data-page-node-id="18ZLiDK6BrroXFiR7nwGkV">
+      <button class="btn-outline" onclick="closeModal('teamModal')" data-page-node-id="AXLOdGoWm6euf27XRzXslK">Cancel</button>
+      <button class="btn-primary" onclick="applyTeams()" data-page-node-id="22Fxo50B6cheEYO6rADdK0">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm reset modal -->
+<div class="modal" id="resetModal" data-page-node-id="XMC3GgRC5iRAhFGRKltRXn">
+  <div class="modal-card" data-page-node-id="sRyEdGUvSTzfk7yfCc3utq">
+    <h2 data-page-node-id="9b3Ob0lHKfBjdxJoGLbVDW">🔄 Reset Game?</h2>
+    <div class="desc" data-page-node-id="GTHFGuHOdohjj2k24iBmDt">This starts a completely new game: all claimed squares and scores are cleared, and the game returns to <b data-page-node-id="QDvfbTW23uoa5WXVlCkXyB">Question 1</b>.<br data-page-node-id="WdWtVfxX8fIAztVe0HULJZ"><b data-page-node-id="QDvfbTW23uoa5WXVlCkXyB">Keywords, questions, team names and colors will be kept.</b></div>
+    <div class="modal-actions" data-page-node-id="rpdt7yS3Gdnvo6hpOy29AR">
+      <button class="btn-outline" onclick="closeModal('resetModal')" data-page-node-id="bxXE0gONz5ZXuOlmlLwF2M">Cancel</button>
+      <button class="btn-danger" onclick="doReset()" data-page-node-id="sDEve5xHXnWBVIblazu6R1">Yes, Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- Square edit menu (reassign / clear ownership) -->
+<div class="sq-menu" id="sqMenu"></div>
+
+<div class="toast" id="toast" data-page-node-id="lF623xPl0amOsbQUSMpXUX"></div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   State
+============================================================ */
+const DEFAULT_KEYWORDS = [
+  "Apple", "Book", "Cat", "Dog", "Egg", "Fish", "Girl", "House", "Ice"
+];
+
+const DEFAULT_QUESTIONS = [
+  "What is your favorite fruit, and why?",
+  "Name three animals that can swim.",
+  "Spell the word 'beautiful' out loud.",
+  "What color do you get when you mix red and blue?",
+  "Say a sentence using the word 'because'.",
+  "How many days are there in a week?",
+  "Name one thing you can find in a classroom.",
+  "What is the opposite of 'hot'?",
+  "Count from one to ten in English.",
+  "What do you say when someone helps you?"
+];
+
+const state = {
+  teams: [
+    { name: "Red Team",   color: "#ef4444" },
+    { name: "Blue Team",  color: "#3b82f6" },
+    { name: "Green Team", color: "#22c55e" }
+  ],
+  keywords: [...DEFAULT_KEYWORDS],
+  board: Array(9).fill(-1),          // -1 unclaimed, else team index
+  winLines: {},                       // teamIdx -> list of line arrays
+  selectedTeam: 0,
+  gameOver: false,
+  roundOver: false,                   // board full / bingo shown but can continue
+  questions: [...DEFAULT_QUESTIONS],  // question list (independent of board)
+  currentQ: 0                         // index of the currently displayed question
+};
+
+const LINES = [
+  [0,1,2],[3,4,5],[6,7,8],          // rows
+  [0,3,6],[1,4,7],[2,5,8],          // cols
+  [0,4,8],[2,4,6]                   // diagonals
+];
+
+/* ============================================================
+   Session persistence (browser localStorage)
+   Keeps questions, teams, colors, scores & claimed squares
+   across page refreshes. Reset Game clears the board & scores.
+============================================================ */
+const STORAGE_KEY = "teamBingo.v1";
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      teams: state.teams,
+      keywords: state.keywords,
+      board: state.board,
+      winLines: state.winLines,
+      selectedTeam: state.selectedTeam,
+      questions: state.questions,
+      currentQ: state.currentQ
+    }));
+  } catch (e) { /* storage unavailable (private mode) — game still works in memory */ }
+}
+
+function computeWinLines() {
+  const wl = {};
+  state.teams.forEach((t, i) => {
+    const lines = LINES.filter(l => l.every(c => state.board[c] === i));
+    if (lines.length > 0) wl[i] = lines;
+  });
+  return wl;
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const s = JSON.parse(raw);
+    // Strict validation — fall back to defaults on any shape mismatch
+    if (!Array.isArray(s.teams) || s.teams.length !== 3) return false;
+    if (s.teams.some(t => !t || typeof t.name !== "string" || !t.name ||
+        !/^#[0-9a-fA-F]{6}$/.test(String(t.color)))) return false;
+    if (!Array.isArray(s.keywords) || s.keywords.length !== 9 ||
+        !s.keywords.every(k => typeof k === "string" && k)) return false;
+    if (!Array.isArray(s.board) || s.board.length !== 9 ||
+        !s.board.every(c => c === -1 || (Number.isInteger(c) && c >= 0 && c <= 2))) return false;
+    if (!Array.isArray(s.questions) || s.questions.length === 0 ||
+        !s.questions.every(q => typeof q === "string" && q)) return false;
+    if (!Number.isInteger(s.currentQ) || s.currentQ < 0 || s.currentQ >= s.questions.length) return false;
+    if (!Number.isInteger(s.selectedTeam) || s.selectedTeam < 0 || s.selectedTeam > 2) return false;
+
+    state.teams = s.teams;
+    state.keywords = s.keywords;
+    state.board = s.board;
+    state.selectedTeam = s.selectedTeam;
+    state.questions = s.questions;
+    state.currentQ = s.currentQ;
+    state.winLines = computeWinLines();   // always recomputed, never trusted from storage
+    return true;
+  } catch (e) { return false; }
+}
+
+/* ============================================================
+   Rendering
+============================================================ */
+function render() {
+  renderQuestion();
+  renderScoreboard();
+  renderTeamSelect();
+  renderBoard();
+  renderStatus();
+  saveState();
+}
+
+/* ============================================================
+   Question display & navigation (independent of the board)
+============================================================ */
+function renderQuestion() {
+  const counter = document.getElementById("qCounter");
+  const badge = document.getElementById("qBadge");
+  const text = document.getElementById("qText");
+  const navCount = document.getElementById("qNavCount");
+  const prevBtn = document.getElementById("qPrevBtn");
+  const nextBtn = document.getElementById("qNextBtn");
+  const total = state.questions.length;
+
+  if (total === 0) {
+    counter.textContent = "No questions yet";
+    badge.style.display = "none";
+    text.className = "qp-text placeholder";
+    text.textContent = "Click \u201c📋 Edit Questions\u201d to add questions for the class.";
+    navCount.textContent = "0 / 0";
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+  } else {
+    // Keep the pointer valid if questions were deleted
+    if (state.currentQ >= total) state.currentQ = total - 1;
+    if (state.currentQ < 0) state.currentQ = 0;
+    const n = state.currentQ + 1;
+    counter.textContent = `Question ${n} of ${total}`;
+    badge.style.display = (n === total) ? "" : "none";
+    if (n === total) {
+      badge.textContent = (total === 1) ? "🏁 Question" : "🏁 Final Question";
+    }
+    text.className = "qp-text";
+    text.textContent = state.questions[state.currentQ];
+    navCount.textContent = `${n} / ${total}`;
+    prevBtn.disabled = state.currentQ === 0;
+    nextBtn.disabled = state.currentQ === total - 1;
+  }
+
+  // Mirror into the compact Big Board question bar
+  renderFocusQ();
+  saveState();
+}
+
+function renderFocusQ() {
+  const wrap = document.getElementById("focusQ");
+  if (!wrap) return;
+  const fc = document.getElementById("fqCounter");
+  const ft = document.getElementById("fqText");
+  const total = state.questions.length;
+  if (total === 0) {
+    fc.textContent = "";
+    ft.textContent = "No questions yet";
+  } else {
+    const n = state.currentQ + 1;
+    fc.textContent = `Question ${n} of ${total}` + (n === total ? " · Final" : "");
+    ft.textContent = state.questions[state.currentQ];
+  }
+}
+
+function prevQuestion() {
+  if (state.currentQ > 0) {
+    state.currentQ--;
+    renderQuestion();
+  }
+}
+
+function nextQuestion() {
+  if (state.currentQ < state.questions.length - 1) {
+    state.currentQ++;
+    renderQuestion();
+  } else {
+    showToast("🏁 This is the last question. The board stays editable!", true);
+  }
+}
+
+function renderScoreboard() {
+  const sb = document.getElementById("scoreboard");
+  sb.innerHTML = "";
+  state.teams.forEach((team, i) => {
+    const count = state.board.filter(c => c === i).length;
+    const card = document.createElement("div");
+    card.className = "score-card" + (state.selectedTeam === i ? " active" : "");
+    card.style.borderLeftColor = team.color;
+    card.innerHTML = `
+      <div class="dot" style="background:${team.color}"></div>
+      <div class="info">
+        <div class="name" style="color:${team.color}">${esc(team.name)}</div>
+        <div class="bar"><div class="fill" style="background:${team.color}"></div></div>
+      </div>
+      <div class="count" style="color:${team.color}">${count}<small>/9 squares</small></div>`;
+    card.querySelector(".fill").style.width = (count / 9 * 100) + "%";
+    if (state.winLines[i] && state.winLines[i].length > 0) {
+      card.querySelector(".name").textContent += " 🏆";
+    }
+    sb.appendChild(card);
+  });
+}
+
+function renderTeamSelect() {
+  const ts = document.getElementById("teamSelect");
+  ts.innerHTML = "";
+  state.teams.forEach((team, i) => {
+    const btn = document.createElement("button");
+    btn.className = "team-btn" + (state.selectedTeam === i ? " selected" : "");
+    btn.style.background = team.color;
+    btn.innerHTML = `${esc(team.name)} <span class="hint">Click to select</span>`;
+    btn.onclick = () => selectTeam(i);
+    ts.appendChild(btn);
+  });
+}
+
+function renderBoard() {
+  const b = document.getElementById("board");
+  b.innerHTML = "";
+  const winnerCells = new Set();
+  Object.keys(state.winLines).forEach(ti => {
+    (state.winLines[ti] || []).forEach(line => line.forEach(c => winnerCells.add(c)));
+  });
+
+  state.keywords.forEach((kw, idx) => {
+    const cell = document.createElement("div");
+    const owner = state.board[idx];
+    if (owner >= 0) {
+      cell.className = "cell claimed";
+      cell.style.background = state.teams[owner].color;
+      cell.style.borderColor = shade(state.teams[owner].color, -12);
+      cell.innerHTML = `<span class="team-tag">${esc(state.teams[owner].name)}</span>${esc(kw)}`;
+    } else {
+      cell.className = "cell";
+      cell.textContent = kw;
+    }
+    if (winnerCells.has(idx)) cell.classList.add("winner");
+    cell.onclick = (e) => claim(idx, e);
+    b.appendChild(cell);
+  });
+}
+
+function renderStatus() {
+  const el = document.getElementById("statusMsg");
+  const winners = Object.keys(state.winLines).filter(i => (state.winLines[i] || []).length > 0);
+  if (winners.length > 0) {
+    const names = winners.map(i => state.teams[i].name).join(" & ");
+    el.innerHTML = `🏆 <strong>${esc(names)}</strong> got BINGO! Claim the remaining squares or reset for a new round.`;
+  } else if (state.board.every(c => c >= 0)) {
+    el.innerHTML = `🤝 All 9 squares are claimed — no Bingo line completed. It's a battle of inches! Reset to play again.`;
+  } else {
+    const t = state.teams[state.selectedTeam];
+    el.innerHTML = `Current turn: <span class="turn-team" style="background:${t.color}">${esc(t.name)}</span> — click an unclaimed square when a student answers correctly.`;
+  }
+}
+
+/* ============================================================
+   Actions
+============================================================ */
+function selectTeam(i) {
+  state.selectedTeam = i;
+  if (state.gameOver) state.gameOver = false;
+  render();
+}
+
+function claim(idx, e) {
+  if (state.board[idx] >= 0) {
+    // Occupied square: open the edit menu (reassign / clear) instead of blocking
+    e.stopPropagation();
+    openSquareMenu(idx, e);
+    return;
+  }
+  const prev = winnerSet();
+  const team = state.teams[state.selectedTeam];
+  state.board[idx] = state.selectedTeam;
+  showToast(`✅ ${team.name} claimed "${state.keywords[idx]}"!`);
+  recalcBingo(prev);
+}
+
+/* --- Set of teams that currently hold a Bingo line (string indices) --- */
+function winnerSet() {
+  const set = new Set();
+  Object.keys(state.winLines).forEach(i => {
+    if ((state.winLines[i] || []).length > 0) set.add(String(i));
+  });
+  return set;
+}
+
+/* --- Recompute ALL winning lines from scratch; announce new winners --- */
+function recalcBingo(prevWinLines) {
+  state.winLines = {};
+  state.teams.forEach((t, i) => {
+    const lines = LINES.filter(l => l.every(c => state.board[c] === i));
+    if (lines.length > 0) state.winLines[i] = lines;
+  });
+
+  // A team lost a previously completed line (square cleared / reassigned away)
+  Object.keys(prevWinLines).forEach(i => {
+    if ((prevWinLines[i] || []).length > 0 && !(state.winLines[i] || []).length) {
+      showToast(`💔 ${state.teams[i].name}'s Bingo line was broken! Winning status removed.`, true);
+    }
+  });
+
+  render();
+
+  // Announce new winners, or a team completing an additional line
+  let announce = false;
+  Object.keys(state.winLines).forEach(i => {
+    const prevCount = (prevWinLines[i] || []).length;
+    const nowCount = state.winLines[i].length;
+    if (prevCount === 0 || nowCount > prevCount) announce = true;
+  });
+  if (announce) showBingo();
+}
+
+/* --- Edit menu for an occupied square --- */
+let sqMenuIndex = -1;
+
+function openSquareMenu(idx, e) {
+  const menu = document.getElementById("sqMenu");
+  sqMenuIndex = idx;
+  const owner = state.board[idx];
+  menu.innerHTML = "";
+
+  const title = document.createElement("div");
+  title.className = "sq-menu-title";
+  title.textContent = `"${state.keywords[idx]}" · claimed by ${state.teams[owner].name} — reassign to:`;
+  menu.appendChild(title);
+
+  state.teams.forEach((t, i) => {
+    const btn = document.createElement("button");
+    btn.className = "sq-menu-btn";
+    btn.style.background = t.color;
+    if (owner === i) {
+      btn.disabled = true;
+      btn.textContent = `✔ ${t.name} (current)`;
+    } else {
+      btn.textContent = t.name;
+      btn.onclick = () => reassignSquare(idx, i);
+    }
+    menu.appendChild(btn);
+  });
+
+  const clearBtn = document.createElement("button");
+  clearBtn.className = "sq-menu-btn sq-clear";
+  clearBtn.textContent = "✕ Clear Ownership";
+  clearBtn.onclick = () => clearSquare(idx);
+  menu.appendChild(clearBtn);
+
+  const cancelBtn = document.createElement("button");
+  cancelBtn.className = "sq-menu-btn sq-cancel";
+  cancelBtn.textContent = "Cancel";
+  cancelBtn.onclick = closeSquareMenu;
+  menu.appendChild(cancelBtn);
+
+  // Position near the click, clamped inside the viewport
+  menu.style.display = "flex";
+  const w = 224, h = 330;
+  const x = Math.max(10, Math.min(e.clientX - w / 2, window.innerWidth - w - 10));
+  const y = Math.max(10, Math.min(e.clientY + 12, window.innerHeight - h - 10));
+  menu.style.left = x + "px";
+  menu.style.top = y + "px";
+}
+
+function closeSquareMenu() {
+  const menu = document.getElementById("sqMenu");
+  menu.style.display = "none";
+  menu.innerHTML = "";
+  sqMenuIndex = -1;
+}
+
+/* --- Reassign an occupied square to another team --- */
+function reassignSquare(idx, teamIdx) {
+  const prev = winnerSet();
+  const old = state.teams[state.board[idx]];
+  const next = state.teams[teamIdx];
+  state.board[idx] = teamIdx;
+  closeSquareMenu();
+  showToast(`🔄 "${state.keywords[idx]}" reassigned: ${old.name} → ${next.name}. Scores updated.`);
+  recalcBingo(prev);
+}
+
+/* --- Clear ownership: square returns to neutral, claimable again --- */
+function clearSquare(idx) {
+  const prev = { ...state.winLines };
+  const old = state.teams[state.board[idx]];
+  state.board[idx] = -1;
+  closeSquareMenu();
+  showToast(`🧹 ${old.name}'s claim on "${state.keywords[idx]}" was cleared. The square is free again.`);
+  recalcBingo(prev);
+}
+
+function showBingo() {
+  const overlay = document.getElementById("bingoOverlay");
+  const list = document.getElementById("winnerList");
+  list.innerHTML = "";
+  Object.keys(state.winLines).forEach(i => {
+    if ((state.winLines[i] || []).length === 0) return;
+    const t = state.teams[i];
+    const w = document.createElement("div");
+    w.className = "winner-line";
+    w.style.color = t.color;
+    w.style.textShadow = "0 0 14px " + t.color + "55";
+    w.textContent = `🏆 ${t.name} completed ${state.winLines[i].length} Bingo line${state.winLines[i].length > 1 ? "s" : ""}!`;
+    list.appendChild(w);
+  });
+  overlay.classList.add("show");
+}
+
+function closeBingo() {
+  document.getElementById("bingoOverlay").classList.remove("show");
+}
+
+/* Question manager ---------------------------------------- */
+function openQuestions() {
+  const box = document.getElementById("qList");
+  box.innerHTML = "";
+  state.questions.forEach((q, i) => box.appendChild(makeQuestionRow(i + 1, q)));
+  if (state.questions.length === 0) addQuestionRow();
+  document.getElementById("qError").textContent = "";
+  document.getElementById("qModal").classList.add("show");
+}
+
+function makeQuestionRow(num, text) {
+  const row = document.createElement("div");
+  row.className = "q-row";
+  row.innerHTML = `
+    <span class="q-num"></span>
+    <input type="text" value="${escAttr(text)}" placeholder="Type a question…" maxlength="200">
+    <button class="q-del" title="Delete this question">✕ Delete</button>`;
+  row.querySelector(".q-del").onclick = () => {
+    row.remove();
+    renumberQuestionRows();
+  };
+  return row;
+}
+
+function addQuestionRow() {
+  const box = document.getElementById("qList");
+  box.appendChild(makeQuestionRow(box.children.length + 1, ""));
+  const inputs = box.querySelectorAll("input[type=text]");
+  inputs[inputs.length - 1].focus();
+}
+
+function renumberQuestionRows() {
+  document.querySelectorAll("#qList .q-row .q-num").forEach((el, i) => {
+    el.textContent = (i + 1) + ".";
+  });
+}
+
+function applyQuestions() {
+  const err = document.getElementById("qError");
+  const rows = [...document.querySelectorAll("#qList .q-row")];
+  const questions = rows.map(r => r.querySelector("input[type=text]").value.trim());
+
+  if (questions.length === 0) {
+    err.textContent = "Please add at least one question (or keep the existing list by pressing Cancel).";
+    return;
+  }
+  if (questions.some(q => !q)) {
+    err.textContent = "Every question needs text — please fill in or delete the empty ones.";
+    return;
+  }
+
+  const prevTotal = state.questions.length;
+  state.questions = questions;
+  // Keep the teacher on a sensible question after editing
+  if (state.currentQ >= state.questions.length) {
+    state.currentQ = state.questions.length - 1;
+  }
+  closeModal("qModal");
+  const note = (prevTotal !== state.questions.length)
+    ? ` — ${state.questions.length} question${state.questions.length > 1 ? "s" : ""} in total`
+    : "";
+  showToast(`✅ Questions saved${note}. The Bingo board is unchanged.`);
+  renderQuestion();
+}
+
+/* Reset ------------------------------------------------- */
+function confirmReset() {
+  document.getElementById("resetModal").classList.add("show");
+}
+function doReset() {
+  state.board = Array(9).fill(-1);
+  state.winLines = {};
+  state.gameOver = false;
+  state.currentQ = 0;                  // new round starts again at Question 1
+  closeModal("resetModal");
+  showToast("🔄 New round started! Good luck to all teams.");
+  render();
+}
+
+/* Keyword editor ---------------------------------------- */
+function openKeywords() {
+  document.getElementById("kwTextarea").value = state.keywords.join("\n");
+  document.getElementById("kwError").textContent = "";
+  document.getElementById("kwModal").classList.add("show");
+}
+function applyKeywords() {
+  const lines = document.getElementById("kwTextarea").value
+    .split("\n").map(s => s.trim()).filter(s => s.length > 0);
+  const err = document.getElementById("kwError");
+  if (lines.length !== 9) {
+    err.textContent = `Please enter exactly 9 keywords (you have ${lines.length}).`;
+    return;
+  }
+  state.keywords = lines;
+  state.board = Array(9).fill(-1);
+  state.winLines = {};
+  closeSquareMenu();
+  closeModal("kwModal");
+  showToast("✅ Keywords updated — board reset for a new game.");
+  render();
+}
+
+/* Team settings ------------------------------------------ */
+function openTeams() {
+  const box = document.getElementById("teamSettingRows");
+  box.innerHTML = "";
+  state.teams.forEach((t, i) => {
+    const row = document.createElement("div");
+    row.className = "team-setting-row";
+    row.innerHTML = `
+      <input type="color" value="${t.color}" data-idx="${i}">
+      <input type="text" value="${escAttr(t.name)}" data-idx="${i}" placeholder="Team name" maxlength="20">`;
+    box.appendChild(row);
+  });
+  document.getElementById("teamError").textContent = "";
+  document.getElementById("teamModal").classList.add("show");
+}
+function applyTeams() {
+  const err = document.getElementById("teamError");
+  const colorInputs = document.querySelectorAll("#teamSettingRows input[type=color]");
+  const nameInputs = document.querySelectorAll("#teamSettingRows input[type=text]");
+  const names = [], colors = [];
+  nameInputs.forEach(inp => names.push(inp.value.trim()));
+  colorInputs.forEach(inp => colors.push(inp.value));
+
+  if (names.some(n => !n)) { err.textContent = "Every team needs a name."; return; }
+  // duplicate name check
+  const lower = names.map(n => n.toLowerCase());
+  if (new Set(lower).size !== 3) { err.textContent = "Team names must be unique."; return; }
+  // duplicate / too-similar color check
+  for (let a = 0; a < 3; a++) {
+    for (let b = a + 1; b < 3; b++) {
+      if (colorDist(colors[a], colors[b]) < 60) {
+        err.textContent = "Team colors are too similar — please pick more distinct colors.";
+        return;
+      }
+    }
+  }
+  state.teams.forEach((t, i) => { t.name = names[i]; t.color = colors[i]; });
+  closeModal("teamModal");
+  showToast("✅ Team settings saved.");
+  render();
+}
+
+/* ============================================================
+   Helpers
+============================================================ */
+function closeModal(id) {
+  document.getElementById(id).classList.remove("show");
+}
+
+let toastTimer = null;
+function showToast(msg, warn = false) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast show" + (warn ? " warn" : "");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2400);
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+function escAttr(s) { return esc(s); }
+
+function shade(hex, pct) {
+  const n = parseInt(hex.slice(1), 16);
+  const r = Math.min(255, Math.max(0, (n >> 16) + Math.round(2.55 * pct)));
+  const g = Math.min(255, Math.max(0, ((n >> 8) & 255) + Math.round(2.55 * pct)));
+  const b = Math.min(255, Math.max(0, (n & 255) + Math.round(2.55 * pct)));
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+function colorDist(h1, h2) {
+  const p = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+  const [r1,g1,b1] = p(h1), [r2,g2,b2] = p(h2);
+  return Math.sqrt((r1-r2)**2 + (g1-g2)**2 + (b1-b2)**2);
+}
+
+/* Big board / focus mode: hides chrome, enlarges board, keeps question visible */
+let focused = false;
+function focusBoard() {
+  focused = !focused;
+  document.querySelector("header").style.display = focused ? "none" : "";
+  document.querySelector("footer").style.display = focused ? "none" : "";
+  document.querySelector(".status-bar").style.display = focused ? "none" : "";
+  document.querySelector(".question-panel").style.display = focused ? "none" : "";
+  document.querySelector(".board-panel").style.padding = focused ? "6px" : "22px";
+  document.getElementById("focusQ").classList.toggle("show", focused);
+  if (focused) {
+    const bp = document.getElementById("boardPanel");
+    bp.style.position = "fixed";
+    bp.style.inset = "10px";
+    bp.style.zIndex = "50";
+    bp.style.display = "flex";
+    bp.style.alignItems = "center";
+    bp.style.justifyContent = "center";
+    bp.style.flexDirection = "column";
+    document.getElementById("board").style.maxHeight = "80vh";
+    document.querySelector(".focus-btn").textContent = "✕ Exit Big Board";
+    showToast("⤢ Big Board mode — the current question stays on top. Press again to exit.");
+  } else {
+    const bp = document.getElementById("boardPanel");
+    bp.style.position = ""; bp.style.inset = ""; bp.style.zIndex = "";
+    bp.style.display = ""; bp.style.alignItems = ""; bp.style.justifyContent = "";
+    bp.style.flexDirection = "";
+    document.getElementById("board").style.maxHeight = "68vh";
+    document.querySelector(".focus-btn").textContent = "⤢ Big Board";
+  }
+  renderFocusQ();
+}
+
+/* Close modals when clicking the dark backdrop */
+["kwModal", "teamModal", "resetModal", "qModal"].forEach(id => {
+  document.getElementById(id).addEventListener("click", e => {
+    if (e.target.id === id) closeModal(id);
+  });
+});
+document.getElementById("bingoOverlay").addEventListener("click", e => {
+  if (e.target.id === "bingoOverlay") closeBingo();
+});
+
+/* Keyboard shortcuts:
+   1/2/3 select team · ← / → navigate questions · Esc closes modals + square menu */
+document.addEventListener("keydown", e => {
+  const typing = e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA");
+  if (typing) return;   // never hijack keys while the teacher is typing
+  if (["1", "2", "3"].includes(e.key)) selectTeam(parseInt(e.key) - 1);
+  if (e.key === "ArrowLeft") prevQuestion();
+  if (e.key === "ArrowRight") nextQuestion();
+  if (e.key === "Escape") {
+    closeSquareMenu();
+    closeBingo(); closeModal("kwModal"); closeModal("teamModal"); closeModal("resetModal"); closeModal("qModal");
+  }
+});
+
+/* Close the square edit menu when clicking anywhere outside of it */
+document.addEventListener("click", e => {
+  const menu = document.getElementById("sqMenu");
+  if (menu.style.display === "flex" && !menu.contains(e.target)) closeSquareMenu();
+});
+
+/* Init — restore the previous session (localStorage) if available */
+if (loadState()) {
+  showToast("📂 Previous game session restored — scores, squares and questions are back.");
+} else {
+  saveState();
+}
+render();
+</script>
+</body>
+</html>
