@@ -3,11 +3,12 @@
 A fully self-contained, single-file interactive web game for classroom group competitions.
 
 - One teacher operates it on a laptop, projected onto a classroom screen.
-- 3 teams (default Red / Blue / Green — names and colors customizable) battle over **one shared 3×3 keyword board**.
+- 3 teams (default Red / Blue / Green — names and colors customizable) battle over **one shared 3×3 keyword board per round**.
+- **Multiple Bingo pages / game rounds**: prepare 3, 5, 10 or more rounds before class via 🗂 Bingo Pages — each with its own title, nine keywords, question list, board ownership and scores. Switch instantly with Prev / Next Round or the page dropdown; one round's data is never touched by another.
 - Students answer questions; correct answers let the teacher claim a square in the team's color.
-- Automatic Bingo detection (rows / columns / diagonals), live scoreboard, question display & navigation, square ownership editing, Big Board projector mode.
-- Question list and Bingo board are fully independent — switching questions never resets territory.
-- Game state (questions, teams, colors, scores, claimed squares, current question) is saved in the browser's localStorage and restored after a page refresh. Use **🔄 Reset Game** to start a completely new game.
+- Automatic Bingo detection (rows / columns / diagonals, per round), live scoreboard, question display & navigation, square ownership editing, Big Board projector mode.
+- Question navigation and the Bingo board are fully independent — switching questions never resets territory; switching rounds restores each round's own progress.
+- All Bingo pages and their progress (teams, colors, scores, claimed squares, current question per round) are saved in the browser's localStorage and restored after a page refresh. Older single-round saves are migrated automatically. **🔄 Reset Game** offers both "Reset This Round" and "Reset ALL Rounds".
 
 ## Files
 
