@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" data-page-node-id="glRbLWh3DVHG6JDn98mSaD">
-<head data-page-node-id="g8KMxzAfpjGWrCTl7cWSh1">
-<meta charset="UTF-8" data-page-node-id="zPsM31m8a4vjnkIpypggla">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="VgUmFxau8xnhDqYDnoRRJt">
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Team Bingo – Classroom Territory Battle</title>
 <style>
   :root {
@@ -162,25 +162,32 @@
     background: var(--panel); border-radius: 20px;
     padding: 22px; box-shadow: var(--shadow);
   }
+  .board-wrap {
+    max-height: 66vh; overflow: auto; padding: 2px;
+    scrollbar-width: thin;
+  }
   .board {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 14px; aspect-ratio: 1/1; max-height: 68vh; margin: 0 auto;
+    display: grid; margin: 0 auto; width: 100%;
+    grid-template-columns: repeat(3, 1fr);
   }
   .cell {
     border-radius: 14px; background: #f8fafc;
     border: 3px solid #e2e8f0;
+    aspect-ratio: 1/1; min-width: 26px;
     display: flex; align-items: center; justify-content: center;
-    text-align: center; font-size: clamp(16px, 3.2vw, 38px); font-weight: 800;
-    word-break: break-word; padding: 8px; cursor: pointer; color: #334155;
+    text-align: center; font-size: var(--cell-fs, clamp(16px, 3.2vw, 38px)); font-weight: 800;
+    word-break: break-word; padding: 4px; cursor: pointer; color: #334155;
     transition: background .25s, color .25s, transform .15s, box-shadow .25s;
-    position: relative; user-select: none; line-height: 1.25;
+    position: relative; user-select: none; line-height: 1.2;
+    overflow: hidden;
   }
   .cell:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(30,41,59,.15); }
   .cell.claimed { cursor: not-allowed; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,.25); }
   .cell.claimed:hover { transform: none; box-shadow: none; }
   .cell .team-tag {
-    position: absolute; top: 8px; left: 10px; font-size: clamp(10px, 1.2vw, 14px);
+    position: absolute; top: 4px; left: 6px; font-size: var(--tag-fs, clamp(10px, 1.2vw, 14px));
     font-weight: 900; opacity: .9; letter-spacing: .05em;
+    white-space: nowrap; overflow: hidden; max-width: 95%;
   }
   .cell.winner {
     border: 5px solid var(--gold) !important;
@@ -293,6 +300,27 @@
   .pg-footer { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
   .pg-footer .hint { color: var(--muted); font-size: 12px; font-weight: 600; max-width: 300px; }
 
+  /* Board size editor (page modal) */
+  .pe-size {
+    display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+    background: #f8fafc; padding: 12px 14px; border-radius: 12px;
+  }
+  .pe-field { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; }
+  .pe-field input[type="number"] {
+    width: 84px; padding: 8px 10px; font-size: 16px; font-family: inherit;
+    border: 2px solid #e2e8f0; border-radius: 10px;
+  }
+  .pe-field input[type="number"]:focus { outline: none; border-color: #4f46e5; }
+  .pe-total { font-weight: 900; color: #4f46e5; font-size: 16px; margin-left: auto; }
+  .size-note {
+    font-size: 13px; font-weight: 600; margin-top: 8px; line-height: 1.5;
+    border-radius: 10px; padding: 10px 12px; display: none;
+  }
+  .size-note.show { display: block; }
+  .size-note.warn { background: #fef3c7; color: #92400e; }
+  .size-note.info { background: #eff6ff; color: #1d4ed8; }
+  .size-note.error { background: #fef2f2; color: #b91c1c; }
+
   /* Compact question bar shown in Big Board mode */
   .focus-q {
     display: none; text-align: center; padding: 6px 14px 14px;
@@ -339,186 +367,213 @@
   .focus-btn { background: #0ea5e9; color: #fff; }
 </style>
 </head>
-<body data-page-node-id="mxHfhMdviA2EfXlre15S8B">
-<div class="wrap" data-page-node-id="aQcQDNGWVxhn1M0Dzmtwvm">
+<body>
+<div class="wrap">
 
-  <header data-page-node-id="o3nDopRa8cTslysSduFup0">
-    <h1 data-page-node-id="PsWtgStDayfuEDSBUDWCwn">Team Bingo</h1>
-    <div class="subtitle" data-page-node-id="MA1loDAbB732HT6xHptqPk">Classroom Territory Battle · 3 Teams · Multiple Rounds · One Shared Board per Round</div>
+  <header>
+    <h1>Team Bingo</h1>
+    <div class="subtitle">Classroom Territory Battle · 3 Teams · Multiple Rounds · One Shared Board per Round</div>
   </header>
 
   <!-- ===== Round bar: switch between Bingo pages ===== -->
-  <div class="round-bar" data-page-node-id="fKMESOLo1YhY90glqrymIp">
-    <div class="rb-left" data-page-node-id="wxC917B7UYnCytmSd24zDa">
-      <button class="rb-btn" id="rbPrevBtn" onclick="prevPage()" data-page-node-id="39LSVQL5WIvCvzqtguFIdo">◀ Prev Round</button>
-      <select class="rb-select" id="pageSelect" onchange="switchPage(parseInt(this.value))" aria-label="Select Bingo page" data-page-node-id="LMwcp3S3R3RDOS7COMCDyR"></select>
-      <button class="rb-btn rb-next" id="rbNextBtn" onclick="nextPage()" data-page-node-id="c7tWdF0bfoGGrB7PLojNJp">Next Round ▶</button>
+  <div class="round-bar">
+    <div class="rb-left">
+      <button class="rb-btn" id="rbPrevBtn" onclick="prevPage()">◀ Prev Round</button>
+      <select class="rb-select" id="pageSelect" onchange="switchPage(parseInt(this.value))" aria-label="Select Bingo page"></select>
+      <button class="rb-btn rb-next" id="rbNextBtn" onclick="nextPage()">Next Round ▶</button>
     </div>
-    <div class="rb-right" data-page-node-id="wat0ap8hjCqDTXC7NbtovA">
-      <span class="rb-count" id="rbCount" data-page-node-id="LJSXuRuZ8oaLiPFGWIBUEG">1 / 1</span>
-      <button class="rb-manage" onclick="openPages()" data-page-node-id="uDVByYAtOMy3eBi7BeHh3n">🗂 Bingo Pages</button>
+    <div class="rb-right">
+      <span class="rb-count" id="rbCount">1 / 1</span>
+      <button class="rb-manage" onclick="openPages()">🗂 Bingo Pages</button>
     </div>
   </div>
 
   <!-- ===== Question Display Panel ===== -->
-  <div class="question-panel" data-page-node-id="8goLrb8Tr2XBh0HWhf6lqT">
-    <div class="qp-counter" data-page-node-id="w7FlNzscALanUE63wbmpJV">
-      <span class="qp-round" id="qRound" data-page-node-id="Ha2Je0Abp5EI5QQEdmAyXf"></span>
-      <span id="qCounter" data-page-node-id="jeuNLiBsUjhOz9cCYw8a8d">Question 1 of 10</span>
-      <span class="qp-badge" id="qBadge" style="display:none" data-page-node-id="LBbH3FuH5juE2zzHhOlDbH">🏁 Final Question</span>
+  <div class="question-panel">
+    <div class="qp-counter">
+      <span class="qp-round" id="qRound"></span>
+      <span id="qCounter">Question 1 of 10</span>
+      <span class="qp-badge" id="qBadge" style="display:none">🏁 Final Question</span>
     </div>
-    <div class="qp-text" id="qText" data-page-node-id="iVVZLr2Ca7IeRBNYQcwSF9"></div>
-    <div class="qp-nav" data-page-node-id="M1QlANNtRM3I5EmS19uz5D">
-      <button class="btn-outline" id="qPrevBtn" onclick="prevQuestion()" data-page-node-id="G6QY3CDwejroYt1PKVe6Fs">← Previous Question</button>
-      <span class="q-count" id="qNavCount" data-page-node-id="qzSMvjMgezMdrmPAWPgbnc">1 / 10</span>
-      <button class="btn-primary" id="qNextBtn" onclick="nextQuestion()" data-page-node-id="TYL2JeenuJfNphSWROUOyj">Next Question →</button>
-    </div>
-  </div>
-
-  <div class="status-bar" data-page-node-id="WHRuicRXCvPd2sBCRHX5iR">
-    <div class="status-msg" id="statusMsg" data-page-node-id="13c4xPUAxepBC9DcaWfll9">Select a team below, then click a square to claim it.</div>
-    <div class="actions" data-page-node-id="hqaWilkKk2e6n0UTHacH3o">
-      <button class="btn-outline" onclick="openKeywords()" data-page-node-id="bri3Kk4MFxJGoOuIDbfCOD">✏️ Edit Keywords</button>
-      <button class="btn-outline" onclick="openQuestions()" data-page-node-id="MnQWPqgU2lzlPbM8uIaeDQ">📋 Edit Questions</button>
-      <button class="btn-outline" onclick="openTeams()" data-page-node-id="d392mHipmYcGRsZ5AMSsCa">⚙️ Team Settings</button>
-      <button class="btn-outline focus-btn" onclick="focusBoard()" data-page-node-id="JzQGhbDVAje5znWpL4jLoi">⤢ Big Board</button>
-      <button class="btn-danger" onclick="confirmReset()" data-page-node-id="F7lhHbNXfXI5KANvUwlSJE">🔄 Reset Game</button>
+    <div class="qp-text" id="qText"></div>
+    <div class="qp-nav">
+      <button class="btn-outline" id="qPrevBtn" onclick="prevQuestion()">← Previous Question</button>
+      <span class="q-count" id="qNavCount">1 / 10</span>
+      <button class="btn-primary" id="qNextBtn" onclick="nextQuestion()">Next Question →</button>
     </div>
   </div>
 
-  <div class="main-grid" data-page-node-id="tEBSS7Gp6Ta5EsWLKqIpDj">
+  <div class="status-bar">
+    <div class="status-msg" id="statusMsg">Select a team below, then click a square to claim it.</div>
+    <div class="actions">
+      <button class="btn-outline" onclick="openKeywords()">✏️ Edit Keywords</button>
+      <button class="btn-outline" onclick="openQuestions()">📋 Edit Questions</button>
+      <button class="btn-outline" onclick="openTeams()">⚙️ Team Settings</button>
+      <button class="btn-outline focus-btn" onclick="focusBoard()">⤢ Big Board</button>
+      <button class="btn-danger" onclick="confirmReset()">🔄 Reset Game</button>
+    </div>
+  </div>
+
+  <div class="main-grid">
 
     <!-- Sidebar: scoreboard + team selector -->
-    <div class="sidebar" data-page-node-id="RLY4xR4hGgvIChFI3iGBWK">
-      <div class="scoreboard" id="scoreboard" data-page-node-id="84Qold4Ynba5sQA5xWKOvQ"></div>
-      <div class="team-select" id="teamSelect" data-page-node-id="g3hfs1Dnrc8vQdFXuWnnh3"></div>
+    <div class="sidebar">
+      <div class="scoreboard" id="scoreboard"></div>
+      <div class="team-select" id="teamSelect"></div>
     </div>
 
     <!-- Board -->
-    <div class="board-panel" id="boardPanel" data-page-node-id="icL3X4ZdmUTWMUFEJDdMrl">
-      <div class="focus-q" id="focusQ" data-page-node-id="kYVlkDBjpBl46jyIFY4ZXe">
-        <div class="fq-counter" id="fqCounter" data-page-node-id="6ZKxWhmAtPUDZVECppXUfR"></div>
-        <div class="fq-text" id="fqText" data-page-node-id="ipDYPDlgFQgHBZG6MbxVrH"></div>
+    <div class="board-panel" id="boardPanel">
+      <div class="focus-q" id="focusQ">
+        <div class="fq-counter" id="fqCounter"></div>
+        <div class="fq-text" id="fqText"></div>
       </div>
-      <div class="board" id="board" data-page-node-id="aNxzvr51bV3rd1k17r3mD4"></div>
+      <div class="board-wrap" id="boardWrap">
+        <div class="board" id="board"></div>
+      </div>
     </div>
 
   </div>
 
-  <footer data-page-node-id="Cq993FVQVZlJKOypjmzuBd">Teacher-operated · No login required · Projector friendly</footer>
+  <footer>Teacher-operated · No login required · Projector friendly</footer>
 </div>
 
 <!-- Bingo win overlay -->
-<div class="overlay" id="bingoOverlay" data-page-node-id="HZAhcIvCn8bpuhooq2G7Y4">
-  <div class="bingo-card" data-page-node-id="vNXgkCAtId6AXWpbW2kWM9">
-    <div class="bingo-round" id="bingoRound" data-page-node-id="tG3SUAhB3ex3AHAD3V90Ak"></div>
-    <div class="bingo-word" data-page-node-id="lTy5mAMoQ2pBlTRZYa0DFe">BINGO!</div>
-    <div class="winners" id="winnerList" data-page-node-id="Ty8Gz9RhMkwjfBCIH5HSzh"></div>
-    <div class="congrats" data-page-node-id="xaj9jG1PgSXultE6xJaElo">🎉 Congratulations! What a battle! 🎉</div>
-    <button class="btn-primary" onclick="closeBingo()" data-page-node-id="ZGM55SVKsPJCdBamqnPqdz">Continue Game</button>
+<div class="overlay" id="bingoOverlay">
+  <div class="bingo-card">
+    <div class="bingo-round" id="bingoRound"></div>
+    <div class="bingo-word">BINGO!</div>
+    <div class="winners" id="winnerList"></div>
+    <div class="congrats">🎉 Congratulations! What a battle! 🎉</div>
+    <button class="btn-primary" onclick="closeBingo()">Continue Game</button>
   </div>
 </div>
 
 <!-- Keyword editor modal (quick edit — current page only) -->
-<div class="modal" id="kwModal" data-page-node-id="Mq7YHvB42SpmF9CWLgh61H">
-  <div class="modal-card" data-page-node-id="qmy9cEZH0FGeHkW0AQ4qPM">
-    <h2 data-page-node-id="3RB3qqGJv06I47OPJOYWVG">✏️ Edit Keywords</h2>
-    <div class="desc" data-page-node-id="PrPGax9XpQBP5NFcjrCDFP">Edits the <b data-page-node-id="6KZ6hy7iPg7z0B9j5AbzmR">9 keywords of the current round only</b> (<span id="kwRoundName" data-page-node-id="dNOK9o1kOg2E3NVHF5Loo5"></span>). Applying will reset this round's board for a fresh game. Other rounds are not affected.</div>
-    <label data-page-node-id="gXi5grusniCDRuC4TC8uMp">Keywords (one per line)</label>
+<div class="modal" id="kwModal">
+  <div class="modal-card">
+    <h2>✏️ Edit Keywords</h2>
+    <div class="desc">Edits the <b>9+ keywords of the current round only</b> (<span id="kwRoundName"></span>). Enter exactly <b><span id="kwNeed">9</span> keywords</b> (<span id="kwDims">3×3</span> board) — one per line. Applying will reset this round's board. Other rounds are not affected. Use ✎ in 🗂 Bingo Pages to change the board size.</div>
+    <label>Keywords (one per line)</label>
     <textarea id="kwTextarea" spellcheck="false"></textarea>
-    <div class="error-text" id="kwError" data-page-node-id="HHCMfFWpEceBFMMS4CT9eN"></div>
-    <div class="modal-actions" data-page-node-id="IMAHIlNzxRxOYyO92i9M1N">
-      <button class="btn-outline" onclick="closeModal('kwModal')" data-page-node-id="zYfGcNufIWEtyBuQxBxXkJ">Cancel</button>
-      <button class="btn-primary" onclick="applyKeywords()" data-page-node-id="hYIyWBlvI2WFJlSGLMFsfs">Apply &amp; Reset This Round</button>
+    <div class="error-text" id="kwError"></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('kwModal')">Cancel</button>
+      <button class="btn-primary" onclick="applyKeywords()">Apply &amp; Reset This Round</button>
     </div>
   </div>
 </div>
 
 <!-- Question manager modal (quick edit — current page only) -->
-<div class="modal" id="qModal" data-page-node-id="sQCZoITh2kMSEkfOpMsT6T">
-  <div class="modal-card" data-page-node-id="c0V8sKRbmKAjJwqIClplBM">
-    <h2 data-page-node-id="Vxk5HXvMppu8TJr8TzMlWR">📋 Edit Questions</h2>
-    <div class="desc" data-page-node-id="la4Ip8CNiNEojjZOWFM5zj">Edits the <b data-page-node-id="eoXxfBqlFXMFa6CHEAuqLi">questions of the current round only</b> (<span id="qmRoundName" data-page-node-id="xZxqm1wSFMLDrWtAPmjuRt"></span>). Saving will <b data-page-node-id="qQm9DpWhMsMnvxlJCELY7g">not</b> change any claimed squares, scores or the selected team. Other rounds are not affected.</div>
-    <div id="qList" data-page-node-id="9mJnG5g3Yc2dJug809BFxc"></div>
-    <button class="btn-add-q" onclick="addQuestionRow()" data-page-node-id="qKPX62g4JYh9biyxUMYDrf">＋ Add Question</button>
-    <div class="error-text" id="qError" data-page-node-id="idAy30rGkolKzXxs391p0C"></div>
-    <div class="modal-actions" data-page-node-id="xL14qOI0tfYh6jDqY8NUCo">
-      <button class="btn-outline" onclick="closeModal('qModal')" data-page-node-id="lnbFZzIRFsD16PoNwMEGt9">Cancel</button>
-      <button class="btn-primary" onclick="applyQuestions()" data-page-node-id="XcqCU15KnA83jDfGWFD7nl">Save Questions</button>
+<div class="modal" id="qModal">
+  <div class="modal-card">
+    <h2>📋 Edit Questions</h2>
+    <div class="desc">Edits the <b>questions of the current round only</b> (<span id="qmRoundName"></span>). Saving will <b>not</b> change any claimed squares, scores or the selected team. Other rounds are not affected.</div>
+    <div id="qList"></div>
+    <button class="btn-add-q" onclick="addQuestionRow()">＋ Add Question</button>
+    <div class="error-text" id="qError"></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('qModal')">Cancel</button>
+      <button class="btn-primary" onclick="applyQuestions()">Save Questions</button>
     </div>
   </div>
 </div>
 
 <!-- Team settings modal -->
-<div class="modal" id="teamModal" data-page-node-id="yDVZNjTofbIJlvoKoG6t9Z">
-  <div class="modal-card" data-page-node-id="ANQ2rTbEGwN9bTHqmOTd38">
-    <h2 data-page-node-id="5AiKm91wfc7m6AvcSv0t0U">⚙️ Team Settings</h2>
-    <div class="desc" data-page-node-id="d78oL4oaGgWXYXvSlJBQJJ">Team names and colors are <b data-page-node-id="asC0o0IEkmGE5VgT29coPp">shared by all Bingo pages</b>. Squares already claimed will update automatically.</div>
-    <div id="teamSettingRows" data-page-node-id="90wBWBpXVDTH61bU0VceNB"></div>
-    <div class="error-text" id="teamError" data-page-node-id="EHUAgBQrWiEC9qUpNemit6"></div>
-    <div class="modal-actions" data-page-node-id="snaVbJCCuZ80XMgELeZrgS">
-      <button class="btn-outline" onclick="closeModal('teamModal')" data-page-node-id="QFwDUNyWIFnC4MFYcVPVEX">Cancel</button>
-      <button class="btn-primary" onclick="applyTeams()" data-page-node-id="LhPMO78Ao3RnlBUQhccYkV">Save</button>
+<div class="modal" id="teamModal">
+  <div class="modal-card">
+    <h2>⚙️ Team Settings</h2>
+    <div class="desc">Team names and colors are <b>shared by all Bingo pages</b>. Squares already claimed will update automatically.</div>
+    <div id="teamSettingRows"></div>
+    <div class="error-text" id="teamError"></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('teamModal')">Cancel</button>
+      <button class="btn-primary" onclick="applyTeams()">Save</button>
     </div>
   </div>
 </div>
 
 <!-- Confirm reset modal -->
-<div class="modal" id="resetModal" data-page-node-id="sWAm0nEfdFyVR70Rj1dEHq">
-  <div class="modal-card" data-page-node-id="xbP5raTcrWRtKMwJxyYKKm">
-    <h2 data-page-node-id="ft4VA7ydQ1P3YgJ8YzF5qQ">🔄 Reset Game?</h2>
-    <div class="desc" data-page-node-id="vgsdbBhIk7u3KU0e7Yg5oT">
-      <b data-page-node-id="SgXE40GaFMSPcVktAo9C0r">Reset This Round</b> clears the current round's (<span id="rmRoundName" data-page-node-id="8Zl97ik5vusRBmnH7vdBFD"></span>) squares and scores and returns to Question 1 — other rounds keep their progress.<br data-page-node-id="LonRH2MQgjx2MCpST9dGER">
-      <b data-page-node-id="2QOUM2s1kXH9raxGSqtblF">Reset ALL Rounds</b> clears every Bingo page at once.<br data-page-node-id="ORdIRXNevUN796CHlcSavD">
+<div class="modal" id="resetModal">
+  <div class="modal-card">
+    <h2>🔄 Reset Game?</h2>
+    <div class="desc">
+      <b>Reset This Round</b> clears the current round's (<span id="rmRoundName"></span>) squares and scores and returns to Question 1 — other rounds keep their progress.<br>
+      <b>Reset ALL Rounds</b> clears every Bingo page at once.<br>
       Keywords, questions, titles, team names and colors are always kept.
     </div>
-    <div class="modal-actions" data-page-node-id="WAxJs4Y6dPnXVDHtbj57Ce">
-      <button class="btn-outline" onclick="closeModal('resetModal')" data-page-node-id="SSI3PAukj1wk6l1O8XckIU">Cancel</button>
-      <button class="btn-danger-soft" onclick="doResetAll()" data-page-node-id="xbQ2RvW0OMdi4kEmhdry7I">Reset ALL Rounds</button>
-      <button class="btn-danger" onclick="doResetCurrent()" data-page-node-id="fa4rGAQKHkz2Wh3rScDmbc">Reset This Round</button>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('resetModal')">Cancel</button>
+      <button class="btn-danger-soft" onclick="doResetAll()">Reset ALL Rounds</button>
+      <button class="btn-danger" onclick="doResetCurrent()">Reset This Round</button>
     </div>
   </div>
 </div>
 
 <!-- Bingo pages manager modal -->
-<div class="modal" id="pagesModal" data-page-node-id="jsDXGHXYZGADz72HX6NdE1">
-  <div class="modal-card" data-page-node-id="cxTHG4AburSo7sfzde36k2">
-    <h2 data-page-node-id="MLplUYC9vKg88my9mgv8dh">🗂 Bingo Pages</h2>
-    <div class="desc" data-page-node-id="DO7A6y4o8S2adrMDDFP9at">Each Bingo page is a complete, independent game round with its own keywords, questions, board and scores. Teams and colors are shared. Rename a round by editing its title; reorder with ⬆⬇; delete with 🗑 (click twice to confirm).</div>
-    <div id="pgList" data-page-node-id="fm0eE6vjktpQ82NDXLVWST"></div>
-    <button class="btn-add-q" onclick="addPage()" data-page-node-id="xt9gbtJfzRJE2eyCe1EY6X">＋ New Bingo Page</button>
-    <div class="error-text" id="pgError" data-page-node-id="Z1vUZ5RhbUSmGsQk1kIEZe"></div>
-    <div class="pg-footer" data-page-node-id="EGNLIIg2EhfFlDoPvKDKsv">
-      <span class="hint" data-page-node-id="F3mxO75ewbDh0lRonYHNtr">✎ opens the full page editor (title · keywords · questions). ▶ switches the live game to that round.</span>
-      <button class="btn-primary" onclick="closeModal('pagesModal')" data-page-node-id="47MFTyuQPYhQre2RjDX6WW">Done</button>
+<div class="modal" id="pagesModal">
+  <div class="modal-card">
+    <h2>🗂 Bingo Pages</h2>
+    <div class="desc">Each Bingo page is a complete, independent game round with its own keywords, questions, board and scores. Teams and colors are shared. Rename a round by editing its title; reorder with ⬆⬇; delete with 🗑 (click twice to confirm).</div>
+    <div id="pgList"></div>
+    <button class="btn-add-q" onclick="addPage()">＋ New Bingo Page</button>
+    <div class="error-text" id="pgError"></div>
+    <div class="pg-footer">
+      <span class="hint">✎ opens the full page editor (title · keywords · questions). ▶ switches the live game to that round.</span>
+      <button class="btn-primary" onclick="closeModal('pagesModal')">Done</button>
     </div>
   </div>
 </div>
 
-<!-- Page editor modal (title + keywords + questions for one page) -->
-<div class="modal" id="pageModal" data-page-node-id="BRI9ttkkmNc2U36F6HEAMK">
-  <div class="modal-card" data-page-node-id="b97oECKQrRF8RrROYgSsxQ">
-    <h2 data-page-node-id="wcgHyOSUvnrf26jzIQaMYd">✎ Edit Bingo Page</h2>
-    <div class="desc" data-page-node-id="rTs5oiPHjEVfJZAIuBimqg">Prepare this round before class: give it a title, its nine keywords and its questions. Saving only affects <b data-page-node-id="T5pubQt8LQuFE5W6XorbZR">this page</b>. If the keywords change, this page's board is reset; every other page keeps its data.</div>
-    <label data-page-node-id="o9MrkpErCkNidSV2Bq1Low">Page title</label>
-    <input type="text" id="peTitle" maxlength="30" placeholder="e.g. Round 1 · Topic: Democracy" data-page-node-id="NF1QQYmwql516XHQuSX5aK">
-    <label data-page-node-id="NBY03wL8NO4sds9hp31sEL">Keywords — exactly 9, one per line</label>
+<!-- Page editor modal (title + board size + keywords + questions for one page) -->
+<div class="modal" id="pageModal">
+  <div class="modal-card">
+    <h2>✎ Edit Bingo Page</h2>
+    <div class="desc">Prepare this round before class: give it a title, its board size, its keywords and its questions. Saving only affects <b>this page</b>. Changing the board size or keywords resets this page's board; every other page keeps its data.</div>
+    <label>Page title</label>
+    <input type="text" id="peTitle" maxlength="30" placeholder="e.g. Round 1 · Topic: Democracy">
+    <label>Board size (rows × columns, each 2–20, max 400 squares)</label>
+    <div class="pe-size">
+      <div class="pe-field">
+        <span>Rows</span>
+        <input type="number" id="peRows" min="2" max="20" step="1" inputmode="numeric" oninput="onSizeInput()">
+      </div>
+      <div class="pe-field">
+        <span>Columns</span>
+        <input type="number" id="peCols" min="2" max="20" step="1" inputmode="numeric" oninput="onSizeInput()">
+      </div>
+      <div class="pe-total" id="peTotal">Total squares: 9</div>
+    </div>
+    <div class="size-note" id="peSizeNote"></div>
+    <label>Keywords — one per line, exactly <span id="peKwNeed">9</span> for this board</label>
     <textarea id="peKw" spellcheck="false"></textarea>
-    <label data-page-node-id="iQh2Ov43TEGd8Qp1ZMiEyJ">Questions</label>
-    <div id="peQList" data-page-node-id="3t5G9pOapEHEtCij3QCKvQ"></div>
-    <button class="btn-add-q" onclick="addPeQuestionRow()" data-page-node-id="Ca4nqNv7WhoBSaDciCpuze">＋ Add Question</button>
-    <div class="error-text" id="peError" data-page-node-id="RcI95xjnTSFA3CVrHUoKXs"></div>
-    <div class="modal-actions" data-page-node-id="tANshNPIhMmoEmLxNtHS8C">
-      <button class="btn-outline" onclick="closeModal('pageModal')" data-page-node-id="lpzUI7zXbauwJXBCjrK2oT">Cancel</button>
-      <button class="btn-primary" onclick="applyPage()" data-page-node-id="hVBsSnG5kAHqlDoeie9r6a">Save Page</button>
+    <label>Questions</label>
+    <div id="peQList"></div>
+    <button class="btn-add-q" onclick="addPeQuestionRow()">＋ Add Question</button>
+    <div class="error-text" id="peError"></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('pageModal')">Cancel</button>
+      <button class="btn-primary" onclick="applyPage()">Save Page</button>
+    </div>
+  </div>
+</div>
+
+<!-- Board size change confirmation -->
+<div class="modal" id="sizeConfirmModal">
+  <div class="modal-card">
+    <h2>⚠️ Change Board Size?</h2>
+    <div class="desc" id="scText"></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="cancelSizeConfirm()">Keep Editing</button>
+      <button class="btn-danger" onclick="confirmSizeApply()">Apply New Size</button>
     </div>
   </div>
 </div>
 
 <!-- Square edit menu (reassign / clear ownership) -->
-<div class="sq-menu" id="sqMenu" data-page-node-id="9SJ2XELPPWmqns8A8kyiJh"></div>
+<div class="sq-menu" id="sqMenu"></div>
 
-<div class="toast" id="toast" data-page-node-id="qx219YW1DDZvFptLILzADD"></div>
+<div class="toast" id="toast"></div>
 
 <script>
 "use strict";
@@ -543,14 +598,36 @@ const DEFAULT_QUESTIONS = [
   "What do you say when someone helps you?"
 ];
 
-const STORAGE_KEY = "teamBingo.v2";
-const LEGACY_KEY = "teamBingo.v1";   // single-board version — migrated automatically
+const STORAGE_KEY = "teamBingo.v3";
+const LEGACY_KEY_V2 = "teamBingo.v2";   // multi-page, fixed 3×3 boards — migrated automatically
+const LEGACY_KEY_V1 = "teamBingo.v1";   // single-board version — migrated automatically
 
-const LINES = [
-  [0,1,2],[3,4,5],[6,7,8],          // rows
-  [0,3,6],[1,4,7],[2,5,8],          // cols
-  [0,4,8],[2,4,6]                   // diagonals
-];
+/* All winning lines for a rows×cols board:
+   every full row, every full column, and both diagonals
+   (diagonals only exist when the board is square). */
+function winLineList(rows, cols) {
+  const lines = [];
+  for (let r = 0; r < rows; r++) {
+    lines.push(Array.from({ length: cols }, (_, c) => r * cols + c));
+  }
+  for (let c = 0; c < cols; c++) {
+    lines.push(Array.from({ length: rows }, (_, r) => r * cols + c));
+  }
+  if (rows === cols) {
+    lines.push(Array.from({ length: rows }, (_, i) => i * cols + i));
+    lines.push(Array.from({ length: rows }, (_, i) => i * cols + (cols - 1 - i)));
+  }
+  return lines;
+}
+
+/* Board size limits */
+const MIN_DIM = 2, MAX_DIM = 20, MAX_SQUARES = 400;
+
+function dimsValid(rows, cols) {
+  return Number.isInteger(rows) && Number.isInteger(cols) &&
+    rows >= MIN_DIM && rows <= MAX_DIM && cols >= MIN_DIM && cols <= MAX_DIM &&
+    rows * cols <= MAX_SQUARES;
+}
 
 /* ============================================================
    Multi-page state
@@ -563,13 +640,18 @@ function uid() {
   return "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
 
-function makePage(title, keywords, questions) {
+function makePage(title, keywords, questions, rows, cols) {
+  const r = (Number.isInteger(rows) && rows >= MIN_DIM) ? rows : 3;
+  const c = (Number.isInteger(cols) && cols >= MIN_DIM) ? cols : 3;
+  const total = r * c;
   return {
     id: uid(),
     title: title,
+    rows: r,
+    cols: c,
     keywords: keywords ? [...keywords] : [...DEFAULT_KEYWORDS],
     questions: questions ? [...questions] : [...DEFAULT_QUESTIONS],
-    board: Array(9).fill(-1),   // -1 unclaimed, else team index
+    board: Array(total).fill(-1),   // -1 unclaimed, else team index
     currentQ: 0
   };
 }
@@ -580,7 +662,7 @@ const state = {
     { name: "Blue Team",  color: "#3b82f6" },
     { name: "Green Team", color: "#22c55e" }
   ],
-  pages: [ makePage("Round 1", DEFAULT_KEYWORDS, DEFAULT_QUESTIONS) ],
+  pages: [ makePage("Round 1", DEFAULT_KEYWORDS, DEFAULT_QUESTIONS, 3, 3) ],
   current: 0,        // index of the active Bingo page
   selectedTeam: 0,
   winLines: {}       // derived cache for the CURRENT page only
@@ -589,12 +671,13 @@ const state = {
 /* The active page — every game operation acts on this one. */
 function cur() { return state.pages[state.current]; }
 
-/* Winning lines for an arbitrary board (never stored, always derived). */
-function computeWinLinesFor(board) {
+/* Winning lines for an arbitrary page (never stored, always derived). */
+function computeWinLinesFor(page) {
   const wl = {};
+  const lines = winLineList(page.rows, page.cols);
   state.teams.forEach((t, i) => {
-    const lines = LINES.filter(l => l.every(c => board[c] === i));
-    if (lines.length > 0) wl[i] = lines;
+    const wins = lines.filter(l => l.every(c => page.board[c] === i));
+    if (wins.length > 0) wl[i] = wins;
   });
   return wl;
 }
@@ -606,7 +689,7 @@ function computeWinLinesFor(board) {
 function saveState() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      v: 2,
+      v: 3,
       teams: state.teams,
       selectedTeam: state.selectedTeam,
       current: state.current,
@@ -624,18 +707,29 @@ function validTeams(teams) {
 function validPage(p) {
   return p && typeof p === "object" && typeof p.id === "string" && p.id &&
     typeof p.title === "string" && p.title.trim().length > 0 &&
-    Array.isArray(p.keywords) && p.keywords.length === 9 &&
+    dimsValid(p.rows, p.cols) &&
+    Array.isArray(p.keywords) && p.keywords.length === p.rows * p.cols &&
     p.keywords.every(k => typeof k === "string" && k) &&
-    Array.isArray(p.board) && p.board.length === 9 &&
+    Array.isArray(p.board) && p.board.length === p.rows * p.cols &&
     p.board.every(c => c === -1 || (Number.isInteger(c) && c >= 0 && c <= 2)) &&
     Array.isArray(p.questions) && p.questions.length >= 1 &&
     p.questions.every(q => typeof q === "string" && q) &&
     Number.isInteger(p.currentQ) && p.currentQ >= 0 && p.currentQ < p.questions.length;
 }
 
+/* v2 pages have no rows/cols — they were always 3×3. */
+function normalizeV2Page(p) {
+  if (p && typeof p === "object" && !("rows" in p) &&
+      Array.isArray(p.keywords) && p.keywords.length === 9 &&
+      Array.isArray(p.board) && p.board.length === 9) {
+    return { ...p, rows: 3, cols: 3 };
+  }
+  return p;
+}
+
 function loadState() {
   try {
-    // --- v2: multi-page format ---
+    // --- v3: multi-page with per-page board dimensions ---
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const s = JSON.parse(raw);
@@ -647,14 +741,32 @@ function loadState() {
         state.pages = s.pages;
         state.current = s.current;
         state.selectedTeam = s.selectedTeam;
-        state.winLines = computeWinLinesFor(cur().board);
+        state.winLines = computeWinLinesFor(cur());
         return { ok: true, migrated: false };
       }
-      return { ok: false };   // corrupt v2 payload — fall back to defaults
+      return { ok: false };   // corrupt v3 payload — try legacy, then defaults
     }
 
-    // --- v1 legacy: single board -> migrate into one Bingo page ---
-    const old = localStorage.getItem(LEGACY_KEY);
+    // --- v2 legacy: multi-page, fixed 3×3 -> inject rows/cols ---
+    const old2 = localStorage.getItem(LEGACY_KEY_V2);
+    if (old2) {
+      const s = JSON.parse(old2);
+      const pages = Array.isArray(s.pages) ? s.pages.map(normalizeV2Page) : null;
+      if (validTeams(s.teams) && pages && pages.length >= 1 && pages.every(validPage) &&
+          Number.isInteger(s.current) && s.current >= 0 && s.current < pages.length &&
+          Number.isInteger(s.selectedTeam) && s.selectedTeam >= 0 && s.selectedTeam <= 2) {
+        state.teams = s.teams;
+        state.pages = pages;
+        state.current = s.current;
+        state.selectedTeam = s.selectedTeam;
+        state.winLines = computeWinLinesFor(cur());
+        saveState();   // persist in v3 format right away
+        return { ok: true, migrated: true };
+      }
+    }
+
+    // --- v1 legacy: single board -> migrate into one 3×3 Bingo page ---
+    const old = localStorage.getItem(LEGACY_KEY_V1);
     if (old) {
       const s = JSON.parse(old);
       const okTeams = validTeams(s.teams);
@@ -672,14 +784,16 @@ function loadState() {
         state.pages = [{
           id: uid(),
           title: "Round 1",
+          rows: 3,
+          cols: 3,
           keywords: s.keywords,
           questions: s.questions,
           board: s.board,
           currentQ: s.currentQ
         }];
         state.current = 0;
-        state.winLines = computeWinLinesFor(cur().board);
-        saveState();   // persist in v2 format right away
+        state.winLines = computeWinLinesFor(cur());
+        saveState();   // persist in v3 format right away
         return { ok: true, migrated: true };
       }
     }
@@ -691,7 +805,7 @@ function loadState() {
    Rendering
 ============================================================ */
 function render() {
-  state.winLines = computeWinLinesFor(cur().board);
+  state.winLines = computeWinLinesFor(cur());
   renderRoundBar();
   renderQuestion();
   renderScoreboard();
@@ -805,7 +919,7 @@ function nextQuestion() {
 function switchPage(i) {
   if (!Number.isInteger(i) || i < 0 || i >= state.pages.length || i === state.current) return;
   state.current = i;
-  state.winLines = computeWinLinesFor(cur().board);
+  state.winLines = computeWinLinesFor(cur());
   render();
   showToast(`📄 Switched to \u201c${cur().title}\u201d — its board, scores and progress are exactly as you left them.`);
 }
@@ -826,9 +940,10 @@ function nextPage() {
 function renderScoreboard() {
   const sb = document.getElementById("scoreboard");
   sb.innerHTML = "";
-  const board = cur().board;
+  const page = cur();
+  const total = page.rows * page.cols;
   state.teams.forEach((team, i) => {
-    const count = board.filter(c => c === i).length;
+    const count = page.board.filter(c => c === i).length;
     const card = document.createElement("div");
     card.className = "score-card" + (state.selectedTeam === i ? " active" : "");
     card.style.borderLeftColor = team.color;
@@ -838,8 +953,8 @@ function renderScoreboard() {
         <div class="name" style="color:${team.color}">${esc(team.name)}</div>
         <div class="bar"><div class="fill" style="background:${team.color}"></div></div>
       </div>
-      <div class="count" style="color:${team.color}">${count}<small>/9 squares</small></div>`;
-    card.querySelector(".fill").style.width = (count / 9 * 100) + "%";
+      <div class="count" style="color:${team.color}">${count}<small>/${total} squares</small></div>`;
+    card.querySelector(".fill").style.width = (total > 0 ? count / total * 100 : 0) + "%";
     if (state.winLines[i] && state.winLines[i].length > 0) {
       card.querySelector(".name").textContent += " 🏆";
     }
@@ -861,15 +976,32 @@ function renderTeamSelect() {
 }
 
 function renderBoard() {
+  const bw = document.getElementById("boardWrap");
   const b = document.getElementById("board");
   b.innerHTML = "";
   const page = cur();
+  const total = page.rows * page.cols;
+
+  // Dynamic grid: one column track per board column, evenly sized square cells
+  b.style.gridTemplateColumns = `repeat(${page.cols}, 1fr)`;
+  const gapBig = Math.max(page.rows, page.cols);
+  const gap = gapBig <= 6 ? 14 : (gapBig <= 10 ? 10 : 6);
+  b.style.gap = gap + "px";
+
+  // Scale font to keep keywords readable on large boards
+  const wrapW = bw.clientWidth || 620;
+  const cellW = (wrapW - gap * (page.cols - 1) - 8) / page.cols;
+  const fs = Math.max(9, Math.min(38, Math.floor(cellW * 0.30)));
+  b.style.setProperty("--cell-fs", fs + "px");
+  b.style.setProperty("--tag-fs", Math.max(8, Math.floor(fs * 0.45)) + "px");
+
   const winnerCells = new Set();
   Object.keys(state.winLines).forEach(ti => {
     (state.winLines[ti] || []).forEach(line => line.forEach(c => winnerCells.add(c)));
   });
 
-  page.keywords.forEach((kw, idx) => {
+  for (let idx = 0; idx < total; idx++) {
+    const kw = page.keywords[idx];
     const cell = document.createElement("div");
     const owner = page.board[idx];
     if (owner >= 0) {
@@ -884,7 +1016,7 @@ function renderBoard() {
     if (winnerCells.has(idx)) cell.classList.add("winner");
     cell.onclick = (e) => claim(idx, e);
     b.appendChild(cell);
-  });
+  }
 }
 
 function renderStatus() {
@@ -895,7 +1027,7 @@ function renderStatus() {
     const names = winners.map(i => state.teams[i].name).join(" & ");
     el.innerHTML = `🏆 <strong>${esc(names)}</strong> got BINGO in \u201c${esc(page.title)}\u201d! Claim the remaining squares, switch rounds, or reset for a new game.`;
   } else if (page.board.every(c => c >= 0)) {
-    el.innerHTML = `🤝 All 9 squares in \u201c${esc(page.title)}\u201d are claimed — no Bingo line completed. Try the Next Round button or reset this round.`;
+    el.innerHTML = `🤝 All ${page.rows * page.cols} squares in \u201c${esc(page.title)}\u201d (${page.rows}×${page.cols}) are claimed — no Bingo line completed. Try the Next Round button or reset this round.`;
   } else {
     const t = state.teams[state.selectedTeam];
     el.innerHTML = `Current turn: <span class="turn-team" style="background:${t.color}">${esc(t.name)}</span> — click an unclaimed square when a student answers correctly.`;
@@ -936,7 +1068,7 @@ function winnerSet() {
 
 /* --- Recompute winning lines for the CURRENT page; announce new winners --- */
 function recalcBingo(prevWinLines) {
-  state.winLines = computeWinLinesFor(cur().board);
+  state.winLines = computeWinLinesFor(cur());
 
   // A team lost a previously completed line (square cleared / reassigned away)
   Object.keys(prevWinLines).forEach(i => {
@@ -1070,7 +1202,7 @@ function confirmReset() {
 
 function doResetCurrent() {
   const page = cur();
-  page.board = Array(9).fill(-1);
+  page.board = Array(page.rows * page.cols).fill(-1);
   page.currentQ = 0;
   closeModal("resetModal");
   showToast(`🔄 Round \u201c${page.title}\u201d reset — back to Question 1. Other rounds are untouched.`);
@@ -1079,7 +1211,7 @@ function doResetCurrent() {
 
 function doResetAll() {
   state.pages.forEach(p => {
-    p.board = Array(9).fill(-1);
+    p.board = Array(p.rows * p.cols).fill(-1);
     p.currentQ = 0;
   });
   closeModal("resetModal");
@@ -1091,22 +1223,26 @@ function doResetAll() {
    Quick keyword editor (current page only)
 ============================================================ */
 function openKeywords() {
-  document.getElementById("kwRoundName").textContent = cur().title;
-  document.getElementById("kwTextarea").value = cur().keywords.join("\n");
+  const page = cur();
+  document.getElementById("kwRoundName").textContent = page.title;
+  document.getElementById("kwNeed").textContent = page.rows * page.cols;
+  document.getElementById("kwDims").textContent = `${page.rows}×${page.cols}`;
+  document.getElementById("kwTextarea").value = page.keywords.join("\n");
   document.getElementById("kwError").textContent = "";
   document.getElementById("kwModal").classList.add("show");
 }
 function applyKeywords() {
+  const page = cur();
+  const total = page.rows * page.cols;
   const lines = document.getElementById("kwTextarea").value
     .split("\n").map(s => s.trim()).filter(s => s.length > 0);
   const err = document.getElementById("kwError");
-  if (lines.length !== 9) {
-    err.textContent = `Please enter exactly 9 keywords (you have ${lines.length}).`;
+  if (lines.length !== total) {
+    err.textContent = `This ${page.rows}×${page.cols} board needs exactly ${total} keywords (you have ${lines.length}). Use ✎ in 🗂 Bingo Pages to change the board size.`;
     return;
   }
-  const page = cur();
   page.keywords = lines;
-  page.board = Array(9).fill(-1);
+  page.board = Array(total).fill(-1);
   page.currentQ = 0;
   closeSquareMenu();
   closeModal("kwModal");
@@ -1269,7 +1405,7 @@ function renderPageList() {
     const meta = document.createElement("div");
     meta.className = "pg-meta";
     const claimed = p.board.filter(c => c >= 0).length;
-    meta.textContent = `${p.keywords.length} keywords · ${p.questions.length} questions · ${claimed}/9 squares claimed`;
+    meta.textContent = `${p.rows}×${p.cols} board · ${p.keywords.length} keywords · ${p.questions.length} questions · ${claimed}/${p.rows * p.cols} squares claimed`;
     info.appendChild(titleInput);
     info.appendChild(meta);
 
@@ -1366,7 +1502,7 @@ function deletePage(id) {
   const title = state.pages[idx].title;
   state.pages.splice(idx, 1);
   state.current = Math.max(0, state.pages.findIndex(p => p.id === activeId));
-  state.winLines = computeWinLinesFor(cur().board);
+  state.winLines = computeWinLinesFor(cur());
   renderPageList();
   render();
   showToast(`🗑 Bingo page \u201c${title}\u201d deleted.`);
@@ -1387,20 +1523,25 @@ function movePage(id, dir) {
 }
 
 /* ============================================================
-   Page editor (title + keywords + questions for ONE page)
+   Page editor (title + board size + keywords + questions for ONE page)
 ============================================================ */
 let editPageId = null;
+let pendingApply = null;   // staged page changes awaiting size-change confirmation
 
 function openPageEditor(id) {
   const p = state.pages.find(x => x.id === id);
   if (!p) return;
   editPageId = id;
+  pendingApply = null;
   document.getElementById("peTitle").value = p.title;
+  document.getElementById("peRows").value = p.rows;
+  document.getElementById("peCols").value = p.cols;
   document.getElementById("peKw").value = p.keywords.join("\n");
   const box = document.getElementById("peQList");
   box.innerHTML = "";
   p.questions.forEach((q, i) => box.appendChild(makeQuestionRow(i + 1, q, "peQList")));
   document.getElementById("peError").textContent = "";
+  onSizeInput();   // initialize total display / notes
   document.getElementById("pageModal").classList.add("show");
 }
 
@@ -1411,29 +1552,130 @@ function addPeQuestionRow() {
   inputs[inputs.length - 1].focus();
 }
 
+/* Live board-size input: validate, show total, explain impact, auto-fit keywords. */
+function onSizeInput() {
+  const note = document.getElementById("peSizeNote");
+  const totalEl = document.getElementById("peTotal");
+  const kwNeed = document.getElementById("peKwNeed");
+  const r = parseInt(document.getElementById("peRows").value, 10);
+  const c = parseInt(document.getElementById("peCols").value, 10);
+  const p = state.pages.find(x => x.id === editPageId);
+
+  note.className = "size-note";
+  if (!Number.isInteger(r) || !Number.isInteger(c) || r < MIN_DIM || r > MAX_DIM || c < MIN_DIM || c > MAX_DIM) {
+    totalEl.textContent = "Total squares: —";
+    note.classList.add("show", "error");
+    note.textContent = `Rows and columns must be whole numbers between ${MIN_DIM} and ${MAX_DIM}.`;
+    return;
+  }
+  if (r * c > MAX_SQUARES) {
+    totalEl.textContent = `Total squares: ${r * c}`;
+    note.classList.add("show", "error");
+    note.textContent = `That's ${r * c} squares — the maximum is ${MAX_SQUARES} (20×20). Please reduce rows or columns.`;
+    return;
+  }
+
+  const total = r * c;
+  totalEl.textContent = `Total squares: ${total}`;
+  kwNeed.textContent = total;
+
+  // Auto-fit the keyword textarea to the new total (keep existing lines in order)
+  const ta = document.getElementById("peKw");
+  let lines = ta.value.split("\n");
+  if (lines.length < total) {
+    while (lines.length < total) lines.push("");
+    ta.value = lines.join("\n");
+  } else if (lines.length > total) {
+    const dropped = lines.slice(total).filter(s => s.trim().length > 0);
+    lines = lines.slice(0, total);
+    ta.value = lines.join("\n");
+    if (dropped.length > 0 && p && (r !== p.rows || c !== p.cols)) {
+      note.classList.add("show", "warn");
+      note.textContent = `The board is smaller than before — ${dropped.length} keyword${dropped.length > 1 ? "s" : ""} no longer fit${dropped.length > 1 ? "" : "s"} and were removed from the list: ${dropped.map(k => `"${k.trim()}"`).join(", ")}.`;
+      return;
+    }
+  }
+
+  if (p && (r !== p.rows || c !== p.cols)) {
+    const claims = p.board.filter(x => x >= 0).length;
+    note.classList.add("show", "warn");
+    note.textContent =
+      `Changing the board from ${p.rows}×${p.cols} (${p.rows * p.cols} squares) to ${r}×${c} (${total} squares).` +
+      (claims > 0 ? ` All ${claims} claimed square${claims > 1 ? "s" : ""} on this page will be cleared when you save — the grid itself changes.` : "") +
+      ` You'll be asked to confirm before anything is applied.` +
+      (r !== c ? " Note: on a rectangular board, Bingo lines are complete rows and complete columns — diagonals only count on square boards." : "");
+  } else if (r !== c) {
+    note.classList.add("show", "info");
+    note.textContent = "Rectangular board: Bingo lines are complete rows and complete columns — diagonals only count on square boards.";
+  }
+}
+
 function applyPage() {
   const err = document.getElementById("peError");
   const p = state.pages.find(x => x.id === editPageId);
   if (!p) return;
 
   const title = document.getElementById("peTitle").value.trim();
+  const r = parseInt(document.getElementById("peRows").value, 10);
+  const c = parseInt(document.getElementById("peCols").value, 10);
+  const total = r * c;
   const kws = document.getElementById("peKw").value
     .split("\n").map(s => s.trim()).filter(s => s.length > 0);
   const rows = [...document.querySelectorAll("#peQList .q-row")];
-  const questions = rows.map(r => r.querySelector("input[type=text]").value.trim());
+  const questions = rows.map(row => row.querySelector("input[type=text]").value.trim());
 
   if (!title) { err.textContent = "Please give this Bingo page a title (e.g. Round 2 · Topic: Sports)."; return; }
-  if (kws.length !== 9) { err.textContent = `Please enter exactly 9 keywords (you have ${kws.length}).`; return; }
+  if (!dimsValid(r, c)) { err.textContent = `Rows and columns must be whole numbers between ${MIN_DIM} and ${MAX_DIM}, with at most ${MAX_SQUARES} squares in total.`; return; }
+  if (kws.length !== total) { err.textContent = `A ${r}×${c} board needs exactly ${total} keywords (you have ${kws.length}).`; return; }
   if (questions.length === 0) { err.textContent = "Please add at least one question."; return; }
   if (questions.some(q => !q)) { err.textContent = "Every question needs text — fill in or delete the empty ones."; return; }
 
+  const dimsChanged = (r !== p.rows || c !== p.cols);
   const kwChanged = JSON.stringify(kws) !== JSON.stringify(p.keywords);
+  const boardResets = dimsChanged || kwChanged;
+
+  // Data protection: confirm before changing the board dimensions
+  if (dimsChanged) {
+    pendingApply = { p, title, rows: r, cols: c, kws, questions, kwChanged };
+    const claims = p.board.filter(x => x >= 0).length;
+    document.getElementById("scText").innerHTML =
+      `You are about to change the board of <b>\u201c${esc(p.title)}\u201d</b> from ${p.rows}×${p.cols} (${p.rows * p.cols} squares) to <b>${r}×${c} (${total} squares)</b>.<br><br>` +
+      `• Your edited list of ${total} keywords will be saved.<br>` +
+      (claims > 0
+        ? `• ⚠️ All ${claims} claimed square${claims > 1 ? "s" : ""} and this page's scores will be cleared — claims from the old grid cannot carry over to the new one.<br>`
+        : "") +
+      `• ${kwChanged ? "Keywords changed, so this page's board is reset anyway." : "Keywords are unchanged."}<br>` +
+      `• Questions, other Bingo pages and team settings are <b>not</b> affected.<br><br>Saving happens only after you confirm.`;
+    document.getElementById("sizeConfirmModal").classList.add("show");
+    return;
+  }
+
+  commitPage(p, title, r, c, kws, questions, boardResets);
+}
+
+function cancelSizeConfirm() {
+  pendingApply = null;
+  closeModal("sizeConfirmModal");   // page editor stays open underneath for further edits
+}
+
+function confirmSizeApply() {
+  if (!pendingApply) { closeModal("sizeConfirmModal"); return; }
+  const { p, title, rows, cols, kws, questions } = pendingApply;
+  pendingApply = null;
+  closeModal("sizeConfirmModal");
+  commitPage(p, title, rows, cols, kws, questions, true);
+}
+
+function commitPage(p, title, rows, cols, kws, questions, boardResets) {
+  const dimsChanged = (rows !== p.rows || cols !== p.cols);
   p.title = title;
+  p.rows = rows;
+  p.cols = cols;
   p.keywords = kws;
   p.questions = questions;
   if (p.currentQ >= questions.length) p.currentQ = questions.length - 1;
-  if (kwChanged) {
-    p.board = Array(9).fill(-1);   // keywords changed -> reset ONLY this page's board
+  if (boardResets) {
+    p.board = Array(rows * cols).fill(-1);   // reset ONLY this page's board
   }
 
   const isCurrent = (p.id === cur().id);
@@ -1441,8 +1683,8 @@ function applyPage() {
   if (isCurrent) render();
   else { renderPageList(); saveState(); }
   showToast(
-    `✅ \u201c${title}\u201d saved.` +
-    (kwChanged ? " Keywords changed — this round's board was reset." : "") +
+    `✅ \u201c${title}\u201d saved${dimsChanged ? ` — board is now ${rows}×${cols}` : ""}.` +
+    (boardResets ? " This round's board was reset." : "") +
     " Other pages are untouched."
   );
 }
@@ -1504,7 +1746,8 @@ function focusBoard() {
     bp.style.alignItems = "center";
     bp.style.justifyContent = "center";
     bp.style.flexDirection = "column";
-    document.getElementById("board").style.maxHeight = "80vh";
+    document.getElementById("boardWrap").style.maxHeight = "78vh";
+    document.getElementById("boardWrap").style.overflow = "auto";
     document.querySelector(".focus-btn").textContent = "✕ Exit Big Board";
     showToast("⤢ Big Board mode — the round title & question stay on top. Press again to exit.");
   } else {
@@ -1512,21 +1755,29 @@ function focusBoard() {
     bp.style.position = ""; bp.style.inset = ""; bp.style.zIndex = "";
     bp.style.display = ""; bp.style.alignItems = ""; bp.style.justifyContent = "";
     bp.style.flexDirection = "";
-    document.getElementById("board").style.maxHeight = "68vh";
+    document.getElementById("boardWrap").style.maxHeight = "";
+    document.getElementById("boardWrap").style.overflow = "";
     document.querySelector(".focus-btn").textContent = "⤢ Big Board";
   }
   renderFocusQ();
+  renderBoard();   // re-measure cell font for the new layout
 }
 
 /* Close modals when clicking the dark backdrop */
-["kwModal", "teamModal", "resetModal", "qModal", "pagesModal", "pageModal"].forEach(id => {
+["kwModal", "teamModal", "resetModal", "qModal", "pagesModal", "pageModal", "sizeConfirmModal"].forEach(id => {
   document.getElementById(id).addEventListener("click", e => {
-    if (e.target.id === id) closeModal(id);
+    if (e.target.id === id) {
+      if (id === "sizeConfirmModal") cancelSizeConfirm();   // treat backdrop click as "keep editing"
+      else closeModal(id);
+    }
   });
 });
 document.getElementById("bingoOverlay").addEventListener("click", e => {
   if (e.target.id === "bingoOverlay") closeBingo();
 });
+
+/* Re-measure cell font sizes when the window resizes */
+window.addEventListener("resize", () => renderBoard());
 
 /* Keyboard shortcuts:
    1/2/3 select team · ← / → navigate questions · PageUp / PageDown switch Bingo pages · Esc closes modals */
@@ -1543,6 +1794,7 @@ document.addEventListener("keydown", e => {
     closeBingo();
     closeModal("kwModal"); closeModal("teamModal"); closeModal("resetModal");
     closeModal("qModal"); closeModal("pagesModal"); closeModal("pageModal");
+    if (pendingApply) cancelSizeConfirm(); else closeModal("sizeConfirmModal");
   }
 });
 

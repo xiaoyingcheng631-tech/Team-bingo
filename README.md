@@ -4,7 +4,8 @@ A fully self-contained, single-file interactive web game for classroom group com
 
 - One teacher operates it on a laptop, projected onto a classroom screen.
 - 3 teams (default Red / Blue / Green — names and colors customizable) battle over **one shared 3×3 keyword board per round**.
-- **Multiple Bingo pages / game rounds**: prepare 3, 5, 10 or more rounds before class via 🗂 Bingo Pages — each with its own title, nine keywords, question list, board ownership and scores. Switch instantly with Prev / Next Round or the page dropdown; one round's data is never touched by another.
+- **Multiple Bingo pages / game rounds**: prepare 3, 5, 10 or more rounds before class via 🗂 Bingo Pages — each with its own title, board size, keywords, question list, board ownership and scores. Switch instantly with Prev / Next Round or the page dropdown; one round's data is never touched by another.
+- **Fully customizable board size per round**: rows and columns can each be set from 2 to 20 (max 400 squares, e.g. 2×2, 3×3, 4×5, 6×8, 10×10, 20×20). Change the size in each page's ✎ editor — winning lines (full rows / full columns / diagonals on square boards) adapt automatically, and a confirmation dialog protects existing keywords and claimed squares before any change is applied.
 - Students answer questions; correct answers let the teacher claim a square in the team's color.
 - Automatic Bingo detection (rows / columns / diagonals, per round), live scoreboard, question display & navigation, square ownership editing, Big Board projector mode.
 - Question navigation and the Bingo board are fully independent — switching questions never resets territory; switching rounds restores each round's own progress.
