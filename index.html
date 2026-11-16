@@ -63,13 +63,13 @@
   /* ===== Question panel ===== */
   .question-panel {
     background: linear-gradient(135deg, #1e293b, #0f172a);
-    border-radius: 20px; padding: 20px 26px;
-    box-shadow: var(--shadow); margin-bottom: 20px;
+    border-radius: 16px; padding: 12px 22px;
+    box-shadow: var(--shadow); margin-bottom: 14px;
     text-align: center; color: #fff;
-    border-bottom: 5px solid var(--gold);
+    border-bottom: 4px solid var(--gold);
   }
   .qp-counter {
-    font-size: clamp(13px, 1.6vw, 16px); font-weight: 800;
+    font-size: clamp(12px, 1.5vw, 15px); font-weight: 800;
     letter-spacing: .12em; text-transform: uppercase; color: var(--gold);
     display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
   }
@@ -79,20 +79,20 @@
     border-radius: 99px; letter-spacing: .08em; font-weight: 800;
   }
   .qp-text {
-    font-size: clamp(22px, 4vw, 46px); font-weight: 900;
-    margin-top: 12px; line-height: 1.3; min-height: 58px;
+    font-size: clamp(20px, 3.6vw, 40px); font-weight: 900;
+    margin-top: 8px; line-height: 1.25; min-height: 44px;
     display: flex; align-items: center; justify-content: center;
     word-break: break-word; text-shadow: 0 2px 8px rgba(0,0,0,.35);
   }
-  .qp-text.placeholder { color: #94a3b8; font-weight: 700; font-size: clamp(16px, 2.4vw, 24px); }
-  .qp-nav { display: flex; gap: 12px; justify-content: center; align-items: center; margin-top: 16px; flex-wrap: wrap; }
-  .qp-nav .q-count { color: #cbd5e1; font-weight: 700; font-size: 15px; min-width: 70px; }
+  .qp-text.placeholder { color: #94a3b8; font-weight: 700; font-size: clamp(15px, 2.2vw, 22px); }
+  .qp-nav { display: flex; gap: 12px; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+  .qp-nav .q-count { color: #cbd5e1; font-weight: 700; font-size: 14px; min-width: 70px; }
 
   /* ===== Layout ===== */
   .main-grid {
     display: grid;
     grid-template-columns: 260px 1fr;
-    gap: 20px;
+    gap: 16px;
     align-items: start;
   }
   @media (max-width: 860px) {
@@ -101,11 +101,11 @@
   }
 
   /* ===== Scoreboard ===== */
-  .scoreboard { margin-bottom: 20px; }
+  .scoreboard { margin-bottom: 14px; }
   .score-card {
     display: flex; align-items: center; gap: 12px;
     background: var(--panel); border-radius: var(--radius);
-    padding: 12px 16px; margin-bottom: 10px;
+    padding: 9px 14px; margin-bottom: 8px;
     box-shadow: var(--shadow); border-left: 8px solid #ccc;
     transition: transform .15s ease, box-shadow .15s ease;
   }
@@ -122,7 +122,7 @@
   .status-bar {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     background: var(--panel); border-radius: var(--radius);
-    padding: 12px 18px; box-shadow: var(--shadow); margin-bottom: 20px; flex-wrap: wrap;
+    padding: 9px 16px; box-shadow: var(--shadow); margin-bottom: 14px; flex-wrap: wrap;
   }
   .status-msg { font-weight: 700; font-size: clamp(14px, 1.8vw, 18px); }
   .status-msg .turn-team { padding: 3px 12px; border-radius: 99px; color: #fff; }
@@ -143,7 +143,7 @@
   .btn-danger-soft { background: #fff; color: #b91c1c; border: 2px solid #fecaca; }
 
   /* ===== Team selector ===== */
-  .team-select { margin-bottom: 20px; }
+  .team-select { margin-bottom: 14px; }
   .team-btn {
     width: 100%; padding: 16px; margin-bottom: 10px;
     border-radius: var(--radius); color: #fff; font-size: 18px; font-weight: 800;
@@ -157,23 +157,26 @@
   }
   .team-btn .hint { font-size: 12px; font-weight: 600; opacity: .85; display: block; }
 
-  /* ===== Board ===== */
+  /* ===== Board — fully visible, never scrolls =====
+     The wrapper never clips or scrolls: the board is scaled by JS
+     (renderBoard) so every row and column fits inside the viewport. */
   .board-panel {
     background: var(--panel); border-radius: 20px;
-    padding: 22px; box-shadow: var(--shadow);
+    padding: 12px; box-shadow: var(--shadow);
   }
   .board-wrap {
-    max-height: 66vh; overflow: auto; padding: 2px;
-    scrollbar-width: thin;
+    display: flex; justify-content: center; align-items: flex-start;
+    overflow: hidden; padding: 2px;
   }
   .board {
-    display: grid; margin: 0 auto; width: 100%;
+    display: grid; margin: 0 auto; flex: 0 0 auto;
     grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
   }
   .cell {
     border-radius: 14px; background: #f8fafc;
     border: 3px solid #e2e8f0;
-    aspect-ratio: 1/1; min-width: 26px;
+    min-width: 0; min-height: 0;
     display: flex; align-items: center; justify-content: center;
     text-align: center; font-size: var(--cell-fs, clamp(16px, 3.2vw, 38px)); font-weight: 800;
     word-break: break-word; padding: 4px; cursor: pointer; color: #334155;
@@ -1046,18 +1049,39 @@ function renderBoard() {
   const page = cur();
   const total = page.rows * page.cols;
 
-  // Dynamic grid: one column track per board column, evenly sized square cells
+  // Dynamic grid: one track per row & column, evenly sized cells
   b.style.gridTemplateColumns = `repeat(${page.cols}, 1fr)`;
+  b.style.gridTemplateRows = `repeat(${page.rows}, 1fr)`;
   const gapBig = Math.max(page.rows, page.cols);
-  const gap = gapBig <= 6 ? 14 : (gapBig <= 10 ? 10 : 6);
+  const gap = gapBig <= 5 ? 14 : (gapBig <= 8 ? 10 : (gapBig <= 12 ? 7 : 4));
   b.style.gap = gap + "px";
 
-  // Scale font to keep keywords readable on large boards
-  const wrapW = bw.clientWidth || 620;
-  const cellW = (wrapW - gap * (page.cols - 1) - 8) / page.cols;
-  const fs = Math.max(9, Math.min(38, Math.floor(cellW * 0.30)));
+  /* --- Fit the ENTIRE board inside the visible viewport (no scrolling) ---
+     Available width = board column width; available height = viewport minus
+     everything already laid out above the board. The board is then scaled
+     to the largest size that satisfies BOTH constraints, so every row and
+     column is always visible at once on any device / window size. */
+  const wrapW = bw.clientWidth || bw.offsetWidth || 620;
+  const availW = Math.max(140, wrapW - 8);
+  let boardTop = 130;
+  if (typeof bw.getBoundingClientRect === "function") {
+    const rect = bw.getBoundingClientRect();
+    if (rect && isFinite(rect.top) && rect.top > 0) boardTop = rect.top;
+  }
+  const winH = window.innerHeight || 800;
+  const availH = Math.max(160, winH - boardTop - 16);
+
+  const heightIfWidthLimited = availW * page.rows / page.cols;
+  const boardH = Math.min(availH, heightIfWidthLimited);
+  const boardW = boardH * page.cols / page.rows;
+  b.style.width = Math.floor(boardW) + "px";
+  b.style.height = Math.floor(boardH) + "px";
+
+  // Scale font to keep keywords readable; cells stay evenly sized squares
+  const cellW = (boardW - gap * (page.cols - 1)) / page.cols;
+  const fs = Math.max(8, Math.min(38, Math.floor(cellW * 0.30)));
   b.style.setProperty("--cell-fs", fs + "px");
-  b.style.setProperty("--tag-fs", Math.max(8, Math.floor(fs * 0.45)) + "px");
+  b.style.setProperty("--tag-fs", Math.max(6, Math.floor(fs * 0.42)) + "px");
 
   const winnerCells = new Set();
   Object.keys(state.winLines).forEach(ti => {
@@ -1882,7 +1906,7 @@ function focusBoard() {
   document.querySelector(".status-bar").style.display = focused ? "none" : "";
   document.querySelector(".round-bar").style.display = focused ? "none" : "";
   document.querySelector(".question-panel").style.display = focused ? "none" : "";
-  document.querySelector(".board-panel").style.padding = focused ? "6px" : "22px";
+  document.querySelector(".board-panel").style.padding = focused ? "6px" : "12px";
   document.getElementById("focusQ").classList.toggle("show", focused);
   if (focused) {
     const bp = document.getElementById("boardPanel");
@@ -1893,8 +1917,7 @@ function focusBoard() {
     bp.style.alignItems = "center";
     bp.style.justifyContent = "center";
     bp.style.flexDirection = "column";
-    document.getElementById("boardWrap").style.maxHeight = "78vh";
-    document.getElementById("boardWrap").style.overflow = "auto";
+    // no scrolling in Big Board mode either — renderBoard fits the board to the viewport
     document.querySelector(".focus-btn").textContent = "✕ Exit Big Board";
     showToast("⤢ Big Board mode — the round title & question stay on top. Press again to exit.");
   } else {
@@ -1902,8 +1925,6 @@ function focusBoard() {
     bp.style.position = ""; bp.style.inset = ""; bp.style.zIndex = "";
     bp.style.display = ""; bp.style.alignItems = ""; bp.style.justifyContent = "";
     bp.style.flexDirection = "";
-    document.getElementById("boardWrap").style.maxHeight = "";
-    document.getElementById("boardWrap").style.overflow = "";
     document.querySelector(".focus-btn").textContent = "⤢ Big Board";
   }
   renderFocusQ();
@@ -1924,8 +1945,9 @@ document.getElementById("bingoOverlay").addEventListener("click", e => {
   if (e.target.id === "bingoOverlay") closeBingo();
 });
 
-/* Re-measure cell font sizes when the window resizes */
+/* Re-fit the board when the window is resized or the device rotates */
 window.addEventListener("resize", () => renderBoard());
+window.addEventListener("orientationchange", () => setTimeout(renderBoard, 60));
 
 /* Keyboard shortcuts:
    1–9/0 select team (0 = 10th team) · ← / → navigate questions · PageUp / PageDown switch Bingo pages · Esc closes modals */

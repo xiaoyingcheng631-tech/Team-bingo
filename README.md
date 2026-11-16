@@ -3,9 +3,10 @@
 A fully self-contained, single-file interactive web game for classroom group competitions.
 
 - One teacher operates it on a laptop, projected onto a classroom screen.
-- 3 teams (default Red / Blue / Green — names and colors customizable) battle over **one shared 3×3 keyword board per round**.
+- **1–10 teams** (default 3: Red / Blue / Green — count, names and colors all customizable in ⚙️ Team Settings). Every team gets its own scoreboard entry, team-select button, claiming color and ownership records; teams are shared across all Bingo pages. Reducing the team count asks for confirmation and preserves all kept teams' data.
 - **Multiple Bingo pages / game rounds**: prepare 3, 5, 10 or more rounds before class via 🗂 Bingo Pages — each with its own title, board size, keywords, question list, board ownership and scores. Switch instantly with Prev / Next Round or the page dropdown; one round's data is never touched by another.
 - **Fully customizable board size per round**: rows and columns can each be set from 2 to 20 (max 400 squares, e.g. 2×2, 3×3, 4×5, 6×8, 10×10, 20×20). Change the size in each page's ✎ editor — winning lines (full rows / full columns / diagonals on square boards) adapt automatically, and a confirmation dialog protects existing keywords and claimed squares before any change is applied.
+- **Fully visible, no-scroll board**: the whole grid — every row and column — always fits on screen at once (no horizontal or vertical scrolling), on desktops, laptops, projectors, tablets and phones. The board auto-scales with window size and device orientation; larger boards use smaller evenly-sized cells with proportionally scaled fonts.
 - Students answer questions; correct answers let the teacher claim a square in the team's color.
 - Automatic Bingo detection (rows / columns / diagonals, per round), live scoreboard, question display & navigation, square ownership editing, Big Board projector mode.
 - Question navigation and the Bingo board are fully independent — switching questions never resets territory; switching rounds restores each round's own progress.
