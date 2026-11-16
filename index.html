@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en" data-page-node-id="VhWMnWxKce0FU6AQqbKDxS">
+<head data-page-node-id="Dc2prJmfEpwFoJyEgy1VUl">
+<meta charset="UTF-8" data-page-node-id="SDKDqYqEUjYUWwIJ6n6FGH">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="e24VBnMKlTnGXvkjUxmiUR">
 <title>Team Bingo – Classroom Territory Battle</title>
 <style>
   :root {
@@ -256,6 +256,15 @@
     background: #f8fafc; border-radius: 12px; padding: 12px 14px; margin-bottom: 10px;
   }
   .team-setting-row input[type="text"] { flex: 1; }
+  .team-count-row {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    background: #f8fafc; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px;
+  }
+  .team-count-row select {
+    font-family: inherit; font-size: 16px; font-weight: 700;
+    padding: 8px 12px; border-radius: 10px; border: 2px solid #e2e8f0; background: #fff; cursor: pointer;
+  }
+  .team-count-row .tc-note { font-size: 13px; color: var(--muted); font-weight: 600; flex: 1; min-width: 160px; }
   .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
   .modal-actions button { padding: 12px 24px; }
   .error-text { color: #ef4444; font-size: 13px; margin-top: 8px; min-height: 18px; font-weight: 600; }
@@ -367,213 +376,230 @@
   .focus-btn { background: #0ea5e9; color: #fff; }
 </style>
 </head>
-<body>
-<div class="wrap">
+<body data-page-node-id="StsDdCWoxcxGEQlcbDd9r4">
+<div class="wrap" data-page-node-id="QI8oDingLTaem8giMwUgcW">
 
-  <header>
-    <h1>Team Bingo</h1>
-    <div class="subtitle">Classroom Territory Battle · 3 Teams · Multiple Rounds · One Shared Board per Round</div>
+  <header data-page-node-id="IFKJNdkEm3ybET1UERSsb7">
+    <h1 data-page-node-id="X2IjiRCEGR76AzG4CROki9">Team Bingo</h1>
+    <div class="subtitle" data-page-node-id="bGtGXpubWQWkA3izkfNF5V">Classroom Territory Battle · 1–10 Teams · Multiple Rounds · Custom Board Size</div>
   </header>
 
   <!-- ===== Round bar: switch between Bingo pages ===== -->
-  <div class="round-bar">
-    <div class="rb-left">
-      <button class="rb-btn" id="rbPrevBtn" onclick="prevPage()">◀ Prev Round</button>
-      <select class="rb-select" id="pageSelect" onchange="switchPage(parseInt(this.value))" aria-label="Select Bingo page"></select>
-      <button class="rb-btn rb-next" id="rbNextBtn" onclick="nextPage()">Next Round ▶</button>
+  <div class="round-bar" data-page-node-id="i51sY62oomURJvOjDbhiQ8">
+    <div class="rb-left" data-page-node-id="HfTpy42NO8cyDTcvXk1Qu2">
+      <button class="rb-btn" id="rbPrevBtn" onclick="prevPage()" data-page-node-id="apW2oY8I8hImdLSUWFZxmw">◀ Prev Round</button>
+      <select class="rb-select" id="pageSelect" onchange="switchPage(parseInt(this.value))" aria-label="Select Bingo page" data-page-node-id="ejjl3qXpeI8hNSgLBNhzgK"></select>
+      <button class="rb-btn rb-next" id="rbNextBtn" onclick="nextPage()" data-page-node-id="BkpAibeljliggaHo5eAlqy">Next Round ▶</button>
     </div>
-    <div class="rb-right">
-      <span class="rb-count" id="rbCount">1 / 1</span>
-      <button class="rb-manage" onclick="openPages()">🗂 Bingo Pages</button>
+    <div class="rb-right" data-page-node-id="GYc2pTep2i9A5ZzCEtU841">
+      <span class="rb-count" id="rbCount" data-page-node-id="INJ7pcepP7s91zkQQvXK2Q">1 / 1</span>
+      <button class="rb-manage" onclick="openPages()" data-page-node-id="pjKJIcd2hdV7iRxjJJGVui">🗂 Bingo Pages</button>
     </div>
   </div>
 
   <!-- ===== Question Display Panel ===== -->
-  <div class="question-panel">
-    <div class="qp-counter">
-      <span class="qp-round" id="qRound"></span>
-      <span id="qCounter">Question 1 of 10</span>
-      <span class="qp-badge" id="qBadge" style="display:none">🏁 Final Question</span>
+  <div class="question-panel" data-page-node-id="Ihf5rkg4bxkG19XvhirsEh">
+    <div class="qp-counter" data-page-node-id="DI6ARyp44H6oTqVITbyuSH">
+      <span class="qp-round" id="qRound" data-page-node-id="O1GslBhM8Jgu1kXoBWSe1N"></span>
+      <span id="qCounter" data-page-node-id="EDikivZbVaZw85jWh5HxNt">Question 1 of 10</span>
+      <span class="qp-badge" id="qBadge" style="display:none" data-page-node-id="HETIXzH6kP9oHsIYcub6ku">🏁 Final Question</span>
     </div>
-    <div class="qp-text" id="qText"></div>
-    <div class="qp-nav">
-      <button class="btn-outline" id="qPrevBtn" onclick="prevQuestion()">← Previous Question</button>
-      <span class="q-count" id="qNavCount">1 / 10</span>
-      <button class="btn-primary" id="qNextBtn" onclick="nextQuestion()">Next Question →</button>
-    </div>
-  </div>
-
-  <div class="status-bar">
-    <div class="status-msg" id="statusMsg">Select a team below, then click a square to claim it.</div>
-    <div class="actions">
-      <button class="btn-outline" onclick="openKeywords()">✏️ Edit Keywords</button>
-      <button class="btn-outline" onclick="openQuestions()">📋 Edit Questions</button>
-      <button class="btn-outline" onclick="openTeams()">⚙️ Team Settings</button>
-      <button class="btn-outline focus-btn" onclick="focusBoard()">⤢ Big Board</button>
-      <button class="btn-danger" onclick="confirmReset()">🔄 Reset Game</button>
+    <div class="qp-text" id="qText" data-page-node-id="20cmpbqkdtylSzcpWAHdfZ"></div>
+    <div class="qp-nav" data-page-node-id="Nm1ZrQrcYK95cF37ACjfBP">
+      <button class="btn-outline" id="qPrevBtn" onclick="prevQuestion()" data-page-node-id="GXLfHvilPEm1cEAvMkLnQt">← Previous Question</button>
+      <span class="q-count" id="qNavCount" data-page-node-id="7G4g94tSvopTiZBj0TQx8h">1 / 10</span>
+      <button class="btn-primary" id="qNextBtn" onclick="nextQuestion()" data-page-node-id="G2Ai9QHV8qvXa99mRZirLI">Next Question →</button>
     </div>
   </div>
 
-  <div class="main-grid">
+  <div class="status-bar" data-page-node-id="RvUkvkCxPKrX069Ert5p8n">
+    <div class="status-msg" id="statusMsg" data-page-node-id="372ri5XIA1MAf1C1WXox9s">Select a team below, then click a square to claim it.</div>
+    <div class="actions" data-page-node-id="k0L1nwOYGHZbxgbHcAXuEM">
+      <button class="btn-outline" onclick="openKeywords()" data-page-node-id="8CSkpLKf0OE46bOnMdO2vz">✏️ Edit Keywords</button>
+      <button class="btn-outline" onclick="openQuestions()" data-page-node-id="3PaUkI7SDVOKg2Qq7GEBfE">📋 Edit Questions</button>
+      <button class="btn-outline" onclick="openTeams()" data-page-node-id="I9q229oZbnFfrJXYEd1xZe">⚙️ Team Settings</button>
+      <button class="btn-outline focus-btn" onclick="focusBoard()" data-page-node-id="ydjUXq7sYuo5ZxXHTBBAhu">⤢ Big Board</button>
+      <button class="btn-danger" onclick="confirmReset()" data-page-node-id="awyjN8l4U4vZofceYoEVAH">🔄 Reset Game</button>
+    </div>
+  </div>
+
+  <div class="main-grid" data-page-node-id="40FTcVa6OnQ5A7IUi06YFz">
 
     <!-- Sidebar: scoreboard + team selector -->
-    <div class="sidebar">
-      <div class="scoreboard" id="scoreboard"></div>
-      <div class="team-select" id="teamSelect"></div>
+    <div class="sidebar" data-page-node-id="EfQDUaqBQUCBlHDMzSdcvg">
+      <div class="scoreboard" id="scoreboard" data-page-node-id="eKUcUZdc3fhSiPwSpvjDVS"></div>
+      <div class="team-select" id="teamSelect" data-page-node-id="Bp9vh8EfSezTrNhvh0YCAy"></div>
     </div>
 
     <!-- Board -->
-    <div class="board-panel" id="boardPanel">
-      <div class="focus-q" id="focusQ">
-        <div class="fq-counter" id="fqCounter"></div>
-        <div class="fq-text" id="fqText"></div>
+    <div class="board-panel" id="boardPanel" data-page-node-id="iUMKh3GxTSFQooSlh254OI">
+      <div class="focus-q" id="focusQ" data-page-node-id="3MEgEhuRN6sahxwmCBl3aC">
+        <div class="fq-counter" id="fqCounter" data-page-node-id="8oCPeQ8Ixaz8FdQ60tfRkF"></div>
+        <div class="fq-text" id="fqText" data-page-node-id="uW6BMABp3wvT5uKP10V2YP"></div>
       </div>
-      <div class="board-wrap" id="boardWrap">
-        <div class="board" id="board"></div>
+      <div class="board-wrap" id="boardWrap" data-page-node-id="lteyUGKLpOFPnLVCbuZjmL">
+        <div class="board" id="board" data-page-node-id="DTUz2slsTsAEQ8ZxUYJCPE"></div>
       </div>
     </div>
 
   </div>
 
-  <footer>Teacher-operated · No login required · Projector friendly</footer>
+  <footer data-page-node-id="B7QF2ZtEHk1WBoRaqr1lVA">Teacher-operated · No login required · Projector friendly</footer>
 </div>
 
 <!-- Bingo win overlay -->
-<div class="overlay" id="bingoOverlay">
-  <div class="bingo-card">
-    <div class="bingo-round" id="bingoRound"></div>
-    <div class="bingo-word">BINGO!</div>
-    <div class="winners" id="winnerList"></div>
-    <div class="congrats">🎉 Congratulations! What a battle! 🎉</div>
-    <button class="btn-primary" onclick="closeBingo()">Continue Game</button>
+<div class="overlay" id="bingoOverlay" data-page-node-id="Xh1tCwcTyGkzZmgoLBWWCe">
+  <div class="bingo-card" data-page-node-id="BGSE2puM254c3aX5PdFRjC">
+    <div class="bingo-round" id="bingoRound" data-page-node-id="iIyph3dzpMfPtDueK9VHku"></div>
+    <div class="bingo-word" data-page-node-id="sDPfRgxdDjgieJ5Kzh2SWV">BINGO!</div>
+    <div class="winners" id="winnerList" data-page-node-id="QzxSqxFIgxLqS1EHpfvM3Z"></div>
+    <div class="congrats" data-page-node-id="GXNpGGgfavIJs9GFxSWgk3">🎉 Congratulations! What a battle! 🎉</div>
+    <button class="btn-primary" onclick="closeBingo()" data-page-node-id="7kYzTteOqPHzsfNrXkTtNB">Continue Game</button>
   </div>
 </div>
 
 <!-- Keyword editor modal (quick edit — current page only) -->
-<div class="modal" id="kwModal">
-  <div class="modal-card">
-    <h2>✏️ Edit Keywords</h2>
-    <div class="desc">Edits the <b>9+ keywords of the current round only</b> (<span id="kwRoundName"></span>). Enter exactly <b><span id="kwNeed">9</span> keywords</b> (<span id="kwDims">3×3</span> board) — one per line. Applying will reset this round's board. Other rounds are not affected. Use ✎ in 🗂 Bingo Pages to change the board size.</div>
-    <label>Keywords (one per line)</label>
+<div class="modal" id="kwModal" data-page-node-id="CWlmtJgVg2cmjV7JIKSm26">
+  <div class="modal-card" data-page-node-id="GlPxAWCXf9VSOgQRWhHJrU">
+    <h2 data-page-node-id="eXQhsDA02F6toPwGPGsIsP">✏️ Edit Keywords</h2>
+    <div class="desc" data-page-node-id="asAzpAsPnPdy5DCXMeR1nZ">Edits the <b data-page-node-id="iZuub2z8beLRVYp2RAkvmw">9+ keywords of the current round only</b> (<span id="kwRoundName" data-page-node-id="iBu0SBZWU6ivqUCorlinW3"></span>). Enter exactly <b data-page-node-id="FsRjsiEwSx8uN00eFUxs4M"><span id="kwNeed" data-page-node-id="giAtQN9rGFKV64ompb2elG">9</span> keywords</b> (<span id="kwDims" data-page-node-id="gtxYqVTSacL8gOfancq378">3×3</span> board) — one per line. Applying will reset this round's board. Other rounds are not affected. Use ✎ in 🗂 Bingo Pages to change the board size.</div>
+    <label data-page-node-id="RvBvFHixJlrk3exMLYuP1X">Keywords (one per line)</label>
     <textarea id="kwTextarea" spellcheck="false"></textarea>
-    <div class="error-text" id="kwError"></div>
-    <div class="modal-actions">
-      <button class="btn-outline" onclick="closeModal('kwModal')">Cancel</button>
-      <button class="btn-primary" onclick="applyKeywords()">Apply &amp; Reset This Round</button>
+    <div class="error-text" id="kwError" data-page-node-id="R3CHByBB4FX7jTqx2DE0YZ"></div>
+    <div class="modal-actions" data-page-node-id="JUMuHH3dDZ5shwJYMFrLuM">
+      <button class="btn-outline" onclick="closeModal('kwModal')" data-page-node-id="s5NGEkyd1gawWqsypOuD1z">Cancel</button>
+      <button class="btn-primary" onclick="applyKeywords()" data-page-node-id="DoA7L8ZeS5VtQkxyrvxT40">Apply &amp; Reset This Round</button>
     </div>
   </div>
 </div>
 
 <!-- Question manager modal (quick edit — current page only) -->
-<div class="modal" id="qModal">
-  <div class="modal-card">
-    <h2>📋 Edit Questions</h2>
-    <div class="desc">Edits the <b>questions of the current round only</b> (<span id="qmRoundName"></span>). Saving will <b>not</b> change any claimed squares, scores or the selected team. Other rounds are not affected.</div>
-    <div id="qList"></div>
-    <button class="btn-add-q" onclick="addQuestionRow()">＋ Add Question</button>
-    <div class="error-text" id="qError"></div>
-    <div class="modal-actions">
-      <button class="btn-outline" onclick="closeModal('qModal')">Cancel</button>
-      <button class="btn-primary" onclick="applyQuestions()">Save Questions</button>
+<div class="modal" id="qModal" data-page-node-id="E7OntcpV4DnEMetKHU5vmt">
+  <div class="modal-card" data-page-node-id="TKqVwGvVLrabphkkRXRmfK">
+    <h2 data-page-node-id="WzJYuBd2BgnduPCNCU9k0d">📋 Edit Questions</h2>
+    <div class="desc" data-page-node-id="vNIoCNqRoO3KKSkCP9kp6o">Edits the <b data-page-node-id="QGYwTpAONjE2U7F6gdGH1d">questions of the current round only</b> (<span id="qmRoundName" data-page-node-id="qCTkFuFnJuQXqXNbEzlo9e"></span>). Saving will <b data-page-node-id="cBJ7e0qHqJuFE928pDIQ0w">not</b> change any claimed squares, scores or the selected team. Other rounds are not affected.</div>
+    <div id="qList" data-page-node-id="hIZj60wXNPGuHfUyKUGK9D"></div>
+    <button class="btn-add-q" onclick="addQuestionRow()" data-page-node-id="nckni7HWZcmi18i0AHbhBp">＋ Add Question</button>
+    <div class="error-text" id="qError" data-page-node-id="X05KHsNKDf5uYXBQsEKc5O"></div>
+    <div class="modal-actions" data-page-node-id="aBb1QcinhOxjDXVklVBu0A">
+      <button class="btn-outline" onclick="closeModal('qModal')" data-page-node-id="jyMNMkPcb2uxBXPDF6Pu4o">Cancel</button>
+      <button class="btn-primary" onclick="applyQuestions()" data-page-node-id="YKwSoyz8dhQN0UJhItmE4r">Save Questions</button>
     </div>
   </div>
 </div>
 
 <!-- Team settings modal -->
-<div class="modal" id="teamModal">
+<div class="modal" id="teamModal" data-page-node-id="ckLNMkgsEYE4uNurQlmCQa">
+  <div class="modal-card" data-page-node-id="n4jSJJffg6spWkdHW77wpy">
+    <h2 data-page-node-id="EVpQwL8sv1c7vVouu0zPVh">⚙️ Team Settings</h2>
+    <div class="desc" data-page-node-id="04kwI8I8D8z8oHwenZ4jD2">Team count, names and colors are <b data-page-node-id="Q3mBHzzyp78DsAfWtSLucp">shared by all Bingo pages</b>. Pick 1&ndash;10 teams below &mdash; the scoreboard, team selector and claiming controls adapt instantly.</div>
+    <label data-page-node-id="pNqTeamCountLbl1">Number of teams</label>
+    <div class="team-count-row" data-page-node-id="pNqTeamCountRow1">
+      <select id="teamCount" onchange="onTeamCountChange()" aria-label="Number of teams"></select>
+      <span class="tc-note" data-page-node-id="pNqTeamCountNote1">1&ndash;10 teams &middot; reducing asks for confirmation first</span>
+    </div>
+    <div id="teamSettingRows" data-page-node-id="BzKU0tiJEBHzI6XdVoLutE"></div>
+    <div class="error-text" id="teamError" data-page-node-id="dCq7yV4XDEYLq2aVddVJlM"></div>
+    <div class="modal-actions" data-page-node-id="RG327hS9SZl3rFY3yzyb7Z">
+      <button class="btn-outline" onclick="closeModal('teamModal')" data-page-node-id="MM3iPIVfwwPMpa6UTft7vn">Cancel</button>
+      <button class="btn-primary" onclick="applyTeams()" data-page-node-id="qBuEe5rz8Vs4miZAGQWkIq">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm team-count reduction modal -->
+<div class="modal" id="teamCountModal">
   <div class="modal-card">
-    <h2>⚙️ Team Settings</h2>
-    <div class="desc">Team names and colors are <b>shared by all Bingo pages</b>. Squares already claimed will update automatically.</div>
-    <div id="teamSettingRows"></div>
-    <div class="error-text" id="teamError"></div>
+    <h2>&#128064; Remove Teams?</h2>
+    <div class="desc" id="tcDesc"></div>
     <div class="modal-actions">
-      <button class="btn-outline" onclick="closeModal('teamModal')">Cancel</button>
-      <button class="btn-primary" onclick="applyTeams()">Save</button>
+      <button class="btn-outline" onclick="cancelRemoveTeams()">Keep All Teams</button>
+      <button class="btn-danger" onclick="confirmRemoveTeams()">Remove Teams</button>
     </div>
   </div>
 </div>
 
 <!-- Confirm reset modal -->
-<div class="modal" id="resetModal">
-  <div class="modal-card">
-    <h2>🔄 Reset Game?</h2>
-    <div class="desc">
-      <b>Reset This Round</b> clears the current round's (<span id="rmRoundName"></span>) squares and scores and returns to Question 1 — other rounds keep their progress.<br>
-      <b>Reset ALL Rounds</b> clears every Bingo page at once.<br>
+<div class="modal" id="resetModal" data-page-node-id="hG5D1t0XTDn6gXPnzXJ0vB">
+  <div class="modal-card" data-page-node-id="hN61GEMlkXDajjtVJeVHHP">
+    <h2 data-page-node-id="JPLlniEeMh7kcmV9OCOgJ3">🔄 Reset Game?</h2>
+    <div class="desc" data-page-node-id="i1GEo01C8c4UKJg1shCg9o">
+      <b data-page-node-id="ndc0jZOJtfdCsQJoZ9Z8NY">Reset This Round</b> clears the current round's (<span id="rmRoundName" data-page-node-id="X39A752A79llOI7MnI8DbK"></span>) squares and scores and returns to Question 1 — other rounds keep their progress.<br data-page-node-id="E6ICwbgqUTM0gtOVVMYQJv">
+      <b data-page-node-id="IRECr9avEDOYlDGMJS95lE">Reset ALL Rounds</b> clears every Bingo page at once.<br data-page-node-id="VGSv1iBDNXaAFRGOfUDHoO">
       Keywords, questions, titles, team names and colors are always kept.
     </div>
-    <div class="modal-actions">
-      <button class="btn-outline" onclick="closeModal('resetModal')">Cancel</button>
-      <button class="btn-danger-soft" onclick="doResetAll()">Reset ALL Rounds</button>
-      <button class="btn-danger" onclick="doResetCurrent()">Reset This Round</button>
+    <div class="modal-actions" data-page-node-id="r6DtLjJnRg13ptz5YY8lBn">
+      <button class="btn-outline" onclick="closeModal('resetModal')" data-page-node-id="JKpvtjfKbwbEiOdAySbspF">Cancel</button>
+      <button class="btn-danger-soft" onclick="doResetAll()" data-page-node-id="25AWzdrJKHcHiZj46f6apm">Reset ALL Rounds</button>
+      <button class="btn-danger" onclick="doResetCurrent()" data-page-node-id="BzkSVu4DJIxgP4EfBqCZ8S">Reset This Round</button>
     </div>
   </div>
 </div>
 
 <!-- Bingo pages manager modal -->
-<div class="modal" id="pagesModal">
-  <div class="modal-card">
-    <h2>🗂 Bingo Pages</h2>
-    <div class="desc">Each Bingo page is a complete, independent game round with its own keywords, questions, board and scores. Teams and colors are shared. Rename a round by editing its title; reorder with ⬆⬇; delete with 🗑 (click twice to confirm).</div>
-    <div id="pgList"></div>
-    <button class="btn-add-q" onclick="addPage()">＋ New Bingo Page</button>
-    <div class="error-text" id="pgError"></div>
-    <div class="pg-footer">
-      <span class="hint">✎ opens the full page editor (title · keywords · questions). ▶ switches the live game to that round.</span>
-      <button class="btn-primary" onclick="closeModal('pagesModal')">Done</button>
+<div class="modal" id="pagesModal" data-page-node-id="i9fU53ee9DxvrH2GQDLqgS">
+  <div class="modal-card" data-page-node-id="cUB8OPdZxEqCoOBqgo6vCN">
+    <h2 data-page-node-id="X5uEVQpJaAT8cM6QnmTKOP">🗂 Bingo Pages</h2>
+    <div class="desc" data-page-node-id="b9Uq5Egr1ot8PnfePwb1Y7">Each Bingo page is a complete, independent game round with its own keywords, questions, board and scores. Teams and colors are shared. Rename a round by editing its title; reorder with ⬆⬇; delete with 🗑 (click twice to confirm).</div>
+    <div id="pgList" data-page-node-id="O86Marr0nZPRK5ujapFzES"></div>
+    <button class="btn-add-q" onclick="addPage()" data-page-node-id="MmmxtSMyXZaaBzS0KarNUn">＋ New Bingo Page</button>
+    <div class="error-text" id="pgError" data-page-node-id="GEHqMTwoarDm7xbKh6cgnO"></div>
+    <div class="pg-footer" data-page-node-id="rj4Plg9MBxtvPtF44kACpY">
+      <span class="hint" data-page-node-id="VYBlhHZWdzeeHuxmcoKVkP">✎ opens the full page editor (title · keywords · questions). ▶ switches the live game to that round.</span>
+      <button class="btn-primary" onclick="closeModal('pagesModal')" data-page-node-id="vHt9IdGZaWd3f2HRs89vO7">Done</button>
     </div>
   </div>
 </div>
 
 <!-- Page editor modal (title + board size + keywords + questions for one page) -->
-<div class="modal" id="pageModal">
-  <div class="modal-card">
-    <h2>✎ Edit Bingo Page</h2>
-    <div class="desc">Prepare this round before class: give it a title, its board size, its keywords and its questions. Saving only affects <b>this page</b>. Changing the board size or keywords resets this page's board; every other page keeps its data.</div>
-    <label>Page title</label>
-    <input type="text" id="peTitle" maxlength="30" placeholder="e.g. Round 1 · Topic: Democracy">
-    <label>Board size (rows × columns, each 2–20, max 400 squares)</label>
-    <div class="pe-size">
-      <div class="pe-field">
-        <span>Rows</span>
-        <input type="number" id="peRows" min="2" max="20" step="1" inputmode="numeric" oninput="onSizeInput()">
+<div class="modal" id="pageModal" data-page-node-id="4YOc3UmpbAwlKnAMBOqFs6">
+  <div class="modal-card" data-page-node-id="UQkb8VYdLXiJBZ6Wqv9Tbj">
+    <h2 data-page-node-id="hVVCmFhGPEg8fb4zEzcCp6">✎ Edit Bingo Page</h2>
+    <div class="desc" data-page-node-id="h8YJ4lBl9nBCWNWsRffzKX">Prepare this round before class: give it a title, its board size, its keywords and its questions. Saving only affects <b data-page-node-id="jjnxEQUT0z4EC2Nm8gaxvr">this page</b>. Changing the board size or keywords resets this page's board; every other page keeps its data.</div>
+    <label data-page-node-id="ADZ1fsdsugIHNOGnvkDn03">Page title</label>
+    <input type="text" id="peTitle" maxlength="30" placeholder="e.g. Round 1 · Topic: Democracy" data-page-node-id="lr14ItmK1kW1Vpa76BnvDd">
+    <label data-page-node-id="YX0drf3h2hCB4VnST9s3Eb">Board size (rows × columns, each 2–20, max 400 squares)</label>
+    <div class="pe-size" data-page-node-id="7zLIVVvCUp7ZTza1fAatxe">
+      <div class="pe-field" data-page-node-id="fT1R6nRBMcemDLCAzC3bBr">
+        <span data-page-node-id="9isihFoi30Gu7JmBhqwy88">Rows</span>
+        <input type="number" id="peRows" min="2" max="20" step="1" inputmode="numeric" oninput="onSizeInput()" data-page-node-id="RldwmTUTFbkz7fvkgdU2Td">
       </div>
-      <div class="pe-field">
-        <span>Columns</span>
-        <input type="number" id="peCols" min="2" max="20" step="1" inputmode="numeric" oninput="onSizeInput()">
+      <div class="pe-field" data-page-node-id="lHictYoH3h5XY17Xy6YWD7">
+        <span data-page-node-id="lrXgRPaXtg7OnWrMsQYafz">Columns</span>
+        <input type="number" id="peCols" min="2" max="20" step="1" inputmode="numeric" oninput="onSizeInput()" data-page-node-id="5NAjmT4wYSj1sCsDEqpuJl">
       </div>
-      <div class="pe-total" id="peTotal">Total squares: 9</div>
+      <div class="pe-total" id="peTotal" data-page-node-id="uIoSxa3iidn171DtSx06dD">Total squares: 9</div>
     </div>
-    <div class="size-note" id="peSizeNote"></div>
-    <label>Keywords — one per line, exactly <span id="peKwNeed">9</span> for this board</label>
+    <div class="size-note" id="peSizeNote" data-page-node-id="o52FSos3aSI3U29PEVnrUo"></div>
+    <label data-page-node-id="mNZKZgkZAtw5MKB99RG7r1">Keywords — one per line, exactly <span id="peKwNeed" data-page-node-id="mZg0yLWtgRr8ZoolA0YZJ4">9</span> for this board</label>
     <textarea id="peKw" spellcheck="false"></textarea>
-    <label>Questions</label>
-    <div id="peQList"></div>
-    <button class="btn-add-q" onclick="addPeQuestionRow()">＋ Add Question</button>
-    <div class="error-text" id="peError"></div>
-    <div class="modal-actions">
-      <button class="btn-outline" onclick="closeModal('pageModal')">Cancel</button>
-      <button class="btn-primary" onclick="applyPage()">Save Page</button>
+    <label data-page-node-id="mQRt2HTSaC8xZSIqtiS8Or">Questions</label>
+    <div id="peQList" data-page-node-id="xjUJqyBxHf5utbCHDNLGX3"></div>
+    <button class="btn-add-q" onclick="addPeQuestionRow()" data-page-node-id="KLhx6QDUBZesji6u9ybFKB">＋ Add Question</button>
+    <div class="error-text" id="peError" data-page-node-id="hI27jHOLGVrk5HbV4nqvHG"></div>
+    <div class="modal-actions" data-page-node-id="wcwiDjsedj6gZ92yQbdkb6">
+      <button class="btn-outline" onclick="closeModal('pageModal')" data-page-node-id="h1GLXwLttW8nssQiWbEkb5">Cancel</button>
+      <button class="btn-primary" onclick="applyPage()" data-page-node-id="vPxCOdDID3t13wQ40DZzjN">Save Page</button>
     </div>
   </div>
 </div>
 
 <!-- Board size change confirmation -->
-<div class="modal" id="sizeConfirmModal">
-  <div class="modal-card">
-    <h2>⚠️ Change Board Size?</h2>
-    <div class="desc" id="scText"></div>
-    <div class="modal-actions">
-      <button class="btn-outline" onclick="cancelSizeConfirm()">Keep Editing</button>
-      <button class="btn-danger" onclick="confirmSizeApply()">Apply New Size</button>
+<div class="modal" id="sizeConfirmModal" data-page-node-id="HWcnJtJfDFshmmQGH2e91e">
+  <div class="modal-card" data-page-node-id="DwbW14SnA70gqFDFwEnh4u">
+    <h2 data-page-node-id="3OXxVULT4DktKshnc65SHK">⚠️ Change Board Size?</h2>
+    <div class="desc" id="scText" data-page-node-id="EaHAzAIJFMZxksSOG4MEDm"></div>
+    <div class="modal-actions" data-page-node-id="vUqFeeavdZhXUFbxAValY8">
+      <button class="btn-outline" onclick="cancelSizeConfirm()" data-page-node-id="CXYP7J4WdZ7JIOZ4zY93gE">Keep Editing</button>
+      <button class="btn-danger" onclick="confirmSizeApply()" data-page-node-id="yt1tsDGMjA18uEwZS5hSnv">Apply New Size</button>
     </div>
   </div>
 </div>
 
 <!-- Square edit menu (reassign / clear ownership) -->
-<div class="sq-menu" id="sqMenu"></div>
+<div class="sq-menu" id="sqMenu" data-page-node-id="7zJQpFO5gn4Q43EcT5bRD8"></div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" data-page-node-id="fke4yh5cHJdbBaY5uYCUqW"></div>
 
 <script>
 "use strict";
@@ -601,6 +627,24 @@ const DEFAULT_QUESTIONS = [
 const STORAGE_KEY = "teamBingo.v3";
 const LEGACY_KEY_V2 = "teamBingo.v2";   // multi-page, fixed 3×3 boards — migrated automatically
 const LEGACY_KEY_V1 = "teamBingo.v1";   // single-board version — migrated automatically
+
+/* Team count limits */
+const MIN_TEAMS = 1, MAX_TEAMS = 10;
+
+/* Default palette — 10 visually distinct team colors.
+   The first three keep the classic Red / Blue / Green. */
+const TEAM_PALETTE = [
+  { name: "Red Team",    color: "#ef4444" },
+  { name: "Blue Team",   color: "#3b82f6" },
+  { name: "Green Team",  color: "#22c55e" },
+  { name: "Amber Team",  color: "#f59e0b" },
+  { name: "Purple Team", color: "#a855f7" },
+  { name: "Pink Team",   color: "#ec4899" },
+  { name: "Teal Team",   color: "#14b8a6" },
+  { name: "Cyan Team",   color: "#06b6d4" },
+  { name: "Indigo Team", color: "#6366f1" },
+  { name: "Slate Team",  color: "#64748b" }
+];
 
 /* All winning lines for a rows×cols board:
    every full row, every full column, and both diagonals
@@ -699,19 +743,38 @@ function saveState() {
 }
 
 function validTeams(teams) {
-  return Array.isArray(teams) && teams.length === 3 &&
+  return Array.isArray(teams) && teams.length >= MIN_TEAMS && teams.length <= MAX_TEAMS &&
     teams.every(t => t && typeof t.name === "string" && t.name &&
       /^#[0-9a-fA-F]{6}$/.test(String(t.color)));
 }
 
-function validPage(p) {
+/* Sensible default for a brand-new team: next palette slot, skipping
+   any color or name already in use. */
+function nextTeam() {
+  const used = state.teams.map(t => t.color.toLowerCase());
+  const slot = TEAM_PALETTE[state.teams.length] || TEAM_PALETTE[TEAM_PALETTE.length - 1];
+  const minDist = state.teams.length >= 7 ? 45 : 60;
+  let color = slot.color;
+  if (used.some(u => colorDist(u, color) < minDist)) {
+    const free = TEAM_PALETTE.find(p => !used.some(u => colorDist(u, p.color) < minDist));
+    color = free ? free.color : "#64748b";
+  }
+  let name = slot.name;
+  if (state.teams.some(t => t.name.toLowerCase() === name.toLowerCase())) {
+    name = `Team ${state.teams.length + 1}`;
+  }
+  return { name, color };
+}
+
+function validPage(p, teamCount) {
+  const n = (typeof teamCount === "number" && teamCount >= MIN_TEAMS) ? teamCount : (state.teams ? state.teams.length : 3);
   return p && typeof p === "object" && typeof p.id === "string" && p.id &&
     typeof p.title === "string" && p.title.trim().length > 0 &&
     dimsValid(p.rows, p.cols) &&
     Array.isArray(p.keywords) && p.keywords.length === p.rows * p.cols &&
     p.keywords.every(k => typeof k === "string" && k) &&
     Array.isArray(p.board) && p.board.length === p.rows * p.cols &&
-    p.board.every(c => c === -1 || (Number.isInteger(c) && c >= 0 && c <= 2)) &&
+    p.board.every(c => c === -1 || (Number.isInteger(c) && c >= 0 && c < n)) &&
     Array.isArray(p.questions) && p.questions.length >= 1 &&
     p.questions.every(q => typeof q === "string" && q) &&
     Number.isInteger(p.currentQ) && p.currentQ >= 0 && p.currentQ < p.questions.length;
@@ -734,9 +797,9 @@ function loadState() {
     if (raw) {
       const s = JSON.parse(raw);
       if (validTeams(s.teams) && Array.isArray(s.pages) && s.pages.length >= 1 &&
-          s.pages.every(validPage) &&
+          s.pages.every(p => validPage(p, s.teams.length)) &&
           Number.isInteger(s.current) && s.current >= 0 && s.current < s.pages.length &&
-          Number.isInteger(s.selectedTeam) && s.selectedTeam >= 0 && s.selectedTeam <= 2) {
+          Number.isInteger(s.selectedTeam) && s.selectedTeam >= 0 && s.selectedTeam < s.teams.length) {
         state.teams = s.teams;
         state.pages = s.pages;
         state.current = s.current;
@@ -752,9 +815,9 @@ function loadState() {
     if (old2) {
       const s = JSON.parse(old2);
       const pages = Array.isArray(s.pages) ? s.pages.map(normalizeV2Page) : null;
-      if (validTeams(s.teams) && pages && pages.length >= 1 && pages.every(validPage) &&
+      if (validTeams(s.teams) && pages && pages.length >= 1 && pages.every(p => validPage(p, s.teams.length)) &&
           Number.isInteger(s.current) && s.current >= 0 && s.current < pages.length &&
-          Number.isInteger(s.selectedTeam) && s.selectedTeam >= 0 && s.selectedTeam <= 2) {
+          Number.isInteger(s.selectedTeam) && s.selectedTeam >= 0 && s.selectedTeam < s.teams.length) {
         state.teams = s.teams;
         state.pages = pages;
         state.current = s.current;
@@ -770,14 +833,15 @@ function loadState() {
     if (old) {
       const s = JSON.parse(old);
       const okTeams = validTeams(s.teams);
+      const teamN = okTeams ? s.teams.length : 0;
       const okKw = Array.isArray(s.keywords) && s.keywords.length === 9 &&
         s.keywords.every(k => typeof k === "string" && k);
-      const okBoard = Array.isArray(s.board) && s.board.length === 9 &&
-        s.board.every(c => c === -1 || (Number.isInteger(c) && c >= 0 && c <= 2));
+      const okBoard = okTeams && Array.isArray(s.board) && s.board.length === 9 &&
+        s.board.every(c => c === -1 || (Number.isInteger(c) && c >= 0 && c < teamN));
       const okQs = Array.isArray(s.questions) && s.questions.length >= 1 &&
         s.questions.every(q => typeof q === "string" && q);
       const okQ = Number.isInteger(s.currentQ) && s.currentQ >= 0 && s.currentQ < s.questions.length;
-      const okSel = Number.isInteger(s.selectedTeam) && s.selectedTeam >= 0 && s.selectedTeam <= 2;
+      const okSel = okTeams && Number.isInteger(s.selectedTeam) && s.selectedTeam >= 0 && s.selectedTeam < teamN;
       if (okTeams && okKw && okBoard && okQs && okQ && okSel) {
         state.teams = s.teams;
         state.selectedTeam = s.selectedTeam;
@@ -1130,9 +1194,9 @@ function openSquareMenu(idx, e) {
   cancelBtn.onclick = closeSquareMenu;
   menu.appendChild(cancelBtn);
 
-  // Position near the click, clamped inside the viewport
+  // Position near the click, clamped inside the viewport (height adapts to team count)
   menu.style.display = "flex";
-  const w = 224, h = 330;
+  const w = 224, h = Math.min(menu.children.length * 46 + 70, window.innerHeight - 20);
   const x = Math.max(10, Math.min(e.clientX - w / 2, window.innerWidth - w - 10));
   const y = Math.max(10, Math.min(e.clientY + 12, window.innerHeight - h - 10));
   menu.style.left = x + "px";
@@ -1324,6 +1388,21 @@ function applyQuestions() {
    Team settings (global — shared by all pages)
 ============================================================ */
 function openTeams() {
+  const sel = document.getElementById("teamCount");
+  sel.innerHTML = "";
+  for (let n = MIN_TEAMS; n <= MAX_TEAMS; n++) {
+    const opt = document.createElement("option");
+    opt.value = String(n);
+    opt.textContent = n + (n === 1 ? " team" : " teams");
+    sel.appendChild(opt);
+  }
+  sel.value = String(state.teams.length);
+  renderTeamSettingRows();
+  document.getElementById("teamError").textContent = "";
+  document.getElementById("teamModal").classList.add("show");
+}
+
+function renderTeamSettingRows() {
   const box = document.getElementById("teamSettingRows");
   box.innerHTML = "";
   state.teams.forEach((t, i) => {
@@ -1334,9 +1413,76 @@ function openTeams() {
       <input type="text" value="${escAttr(t.name)}" data-idx="${i}" placeholder="Team name" maxlength="20">`;
     box.appendChild(row);
   });
-  document.getElementById("teamError").textContent = "";
-  document.getElementById("teamModal").classList.add("show");
 }
+
+/* Teacher changed the team-count selector (1–10). */
+function onTeamCountChange() {
+  const sel = document.getElementById("teamCount");
+  const n = parseInt(sel.value, 10);
+  if (Number.isNaN(n) || n < MIN_TEAMS || n > MAX_TEAMS) {
+    sel.value = String(state.teams.length);
+    return;
+  }
+  if (n === state.teams.length) return;
+
+  if (n > state.teams.length) {
+    // Adding teams is non-destructive: append sensible defaults right away
+    const added = [];
+    while (state.teams.length < n) {
+      const t = nextTeam();
+      state.teams.push(t);
+      added.push(t.name);
+    }
+    renderTeamSettingRows();
+    showToast(`➕ ${added.length} team${added.length > 1 ? "s" : ""} added (${esc(added.join(", "))}) — press Save to confirm names & colors.`);
+    render();
+    return;
+  }
+
+  // Reducing teams: confirmation first, then removal
+  let affected = 0;
+  state.pages.forEach(p => p.board.forEach(c => { if (c >= n) affected++; }));
+  const removed = state.teams.slice(n).map(t => t.name).join(", ");
+  pendingTeamCount = n;
+  document.getElementById("tcDesc").innerHTML =
+    `You are about to reduce the number of teams from <b>${state.teams.length} to ${n}</b>.<br>` +
+    `Teams to be removed: <b>${esc(removed)}</b>.<br>` +
+    (affected > 0
+      ? `⚠️ <b>${affected}</b> square${affected > 1 ? "s are" : " is"} currently claimed by the removed teams (across all Bingo pages) and will be cleared back to neutral. All kept teams keep every square, score and progress.`
+      : `✅ No squares are claimed by the removed teams — nothing will be lost.`);
+  document.getElementById("teamCountModal").classList.add("show");
+}
+
+let pendingTeamCount = null;
+
+function confirmRemoveTeams() {
+  const n = pendingTeamCount;
+  pendingTeamCount = null;
+  closeModal("teamCountModal");
+  if (n === null || n >= state.teams.length || n < MIN_TEAMS) return;
+
+  let affected = 0;
+  state.pages.forEach(p => {
+    p.board = p.board.map(c => { if (c >= n) { affected++; return -1; } return c; });
+  });
+  state.teams.length = n;                 // remove teams beyond the new count
+  if (state.selectedTeam >= n) state.selectedTeam = 0;
+  state.winLines = computeWinLinesFor(cur());
+  document.getElementById("teamCount").value = String(state.teams.length);
+  renderTeamSettingRows();
+  render();
+  showToast(
+    `➖ Team count is now ${n}.` +
+    (affected > 0 ? ` ${affected} orphaned square${affected > 1 ? "s were" : " was"} cleared back to neutral.` : " No game data was lost.")
+  );
+}
+
+function cancelRemoveTeams() {
+  pendingTeamCount = null;
+  closeModal("teamCountModal");
+  document.getElementById("teamCount").value = String(state.teams.length);
+}
+
 function applyTeams() {
   const err = document.getElementById("teamError");
   const colorInputs = document.querySelectorAll("#teamSettingRows input[type=color]");
@@ -1347,10 +1493,11 @@ function applyTeams() {
 
   if (names.some(n => !n)) { err.textContent = "Every team needs a name."; return; }
   const lower = names.map(n => n.toLowerCase());
-  if (new Set(lower).size !== 3) { err.textContent = "Team names must be unique."; return; }
-  for (let a = 0; a < 3; a++) {
-    for (let b = a + 1; b < 3; b++) {
-      if (colorDist(colors[a], colors[b]) < 60) {
+  if (new Set(lower).size !== names.length) { err.textContent = "Team names must be unique."; return; }
+  const minDist = names.length >= 7 ? 45 : 60;
+  for (let a = 0; a < colors.length; a++) {
+    for (let b = a + 1; b < colors.length; b++) {
+      if (colorDist(colors[a], colors[b]) < minDist) {
         err.textContent = "Team colors are too similar — please pick more distinct colors.";
         return;
       }
@@ -1358,7 +1505,7 @@ function applyTeams() {
   }
   state.teams.forEach((t, i) => { t.name = names[i]; t.color = colors[i]; });
   closeModal("teamModal");
-  showToast("✅ Team settings saved (applies to every Bingo page).");
+  showToast(`✅ Team settings saved — ${state.teams.length} team${state.teams.length > 1 ? "s" : ""} (applies to every Bingo page).`);
   render();
 }
 
@@ -1764,10 +1911,11 @@ function focusBoard() {
 }
 
 /* Close modals when clicking the dark backdrop */
-["kwModal", "teamModal", "resetModal", "qModal", "pagesModal", "pageModal", "sizeConfirmModal"].forEach(id => {
+["kwModal", "teamModal", "teamCountModal", "resetModal", "qModal", "pagesModal", "pageModal", "sizeConfirmModal"].forEach(id => {
   document.getElementById(id).addEventListener("click", e => {
     if (e.target.id === id) {
       if (id === "sizeConfirmModal") cancelSizeConfirm();   // treat backdrop click as "keep editing"
+      else if (id === "teamCountModal") cancelRemoveTeams(); // treat backdrop click as "keep all teams"
       else closeModal(id);
     }
   });
@@ -1780,11 +1928,14 @@ document.getElementById("bingoOverlay").addEventListener("click", e => {
 window.addEventListener("resize", () => renderBoard());
 
 /* Keyboard shortcuts:
-   1/2/3 select team · ← / → navigate questions · PageUp / PageDown switch Bingo pages · Esc closes modals */
+   1–9/0 select team (0 = 10th team) · ← / → navigate questions · PageUp / PageDown switch Bingo pages · Esc closes modals */
 document.addEventListener("keydown", e => {
   const typing = e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT");
   if (typing) return;   // never hijack keys while the teacher is typing
-  if (["1", "2", "3"].includes(e.key)) selectTeam(parseInt(e.key) - 1);
+  if (/^[0-9]$/.test(e.key)) {
+    const idx = e.key === "0" ? 9 : parseInt(e.key, 10) - 1;
+    if (idx >= 0 && idx < state.teams.length) selectTeam(idx);
+  }
   if (e.key === "ArrowLeft") prevQuestion();
   if (e.key === "ArrowRight") nextQuestion();
   if (e.key === "PageDown") nextPage();
@@ -1792,6 +1943,7 @@ document.addEventListener("keydown", e => {
   if (e.key === "Escape") {
     closeSquareMenu();
     closeBingo();
+    if (pendingTeamCount !== null) cancelRemoveTeams(); else closeModal("teamCountModal");
     closeModal("kwModal"); closeModal("teamModal"); closeModal("resetModal");
     closeModal("qModal"); closeModal("pagesModal"); closeModal("pageModal");
     if (pendingApply) cancelSizeConfirm(); else closeModal("sizeConfirmModal");
